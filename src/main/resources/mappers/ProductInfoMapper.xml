@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xia.sell.dao.ProductInfoMapper">
+  <resultMap id="BaseResultMap" type="com.xia.sell.po.ProductInfo">
+    <constructor>
+      <idArg column="product_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="product_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="product_price" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+      <arg column="sold" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="product_description" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="product_icon" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="product_status" javaType="java.lang.Byte" jdbcType="TINYINT" />
+      <arg column="category_type" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="seller_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="remove" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+  <resultMap id="ResultMapForProductInfoVO" type="com.xia.sell.vo.ProductInfoVO">
+      <id property="productId" column="product_id"></id>
+      <result property="productName" column="product_name"></result>
+      <result property="productPrice" column="product_price"></result>
+      <result property="productDescription" column="product_description"></result>
+      <result property="productIcon" column="product_icon"></result>
+      <result property="sold" column="sold"></result>
+  </resultMap>
+  <resultMap id="ResultMapForSellerProductInfoVO" type="com.xia.sell.vo.SellerProductInfoVO">
+      <id property="productId" column="product_id"></id>
+      <result property="productName" column="product_name"></result>
+      <result property="productPrice" column="product_price"></result>
+      <result property="sold" column="sold"></result>
+      <result property="productDescription" column="product_description"></result>
+      <result property="productIcon" column="product_icon"></result>
+      <result property="productStatus" column="product_status"></result>
+      <result property="categoryType" column="category_name"></result>
+      <result property="createTime" column="create_time"></result>
+      <result property="updateTime" column="update_time"></result>
+  </resultMap>
+  <sql id="Base_Column_List">
+    product_id, product_name, product_price, sold, product_description, product_icon,
+    product_status, category_type, seller_id,remove,create_time, update_time
+  </sql>
+  <sql id="Base_Column_List2">
+    product_id, product_name, product_price, sold, product_description, product_icon,
+    product_status, category_name, i.create_time, i.update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from product_info
+    where product_id = #{productId,jdbcType=VARCHAR}
+  </select>
+	<select id="selectAllProductInfosForPages" resultMap="BaseResultMap">
+        SELECT
+      <include refid="Base_Column_List" />
+      FROM product_info
+    </select>
+	<select id="selectProductInfoByProductCategory" resultMap="BaseResultMap" parameterType="map">
+        SELECT
+      <include refid="Base_Column_List" />
+      FROM product_info WHERE product_status = 0 AND category_type = #{categoryType} AND seller_id = #{sellerId} AND remove = 0
+    </select>
+
+	<select id="selectSellerProductInfoVO" resultMap="ResultMapForSellerProductInfoVO" parameterType="string">
+        SELECT
+      <include refid="Base_Column_List2" />
+      FROM product_info as i INNER JOIN product_category as c ON i.category_type=c.category_type WHERE i.seller_id = #{sellerId} AND i.remove = 0;
+    </select>
+
+	<select id="selectAllProductCategoryTypeByShopId" parameterType="string" resultType="string">
+        SELECT category_type FROM product_info WHERE product_status=0 AND seller_id=#{sellerId};
+    </select>
+	<select id="selectAllProduct" resultMap="BaseResultMap">
+        SELECT
+         <include refid="Base_Column_List"/>
+         FROM product_info ;
+    </select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from product_info
+    where product_id = #{productId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xia.sell.po.ProductInfo">
+    insert into product_info (product_id, product_name, product_price, 
+      product_stock, product_description, product_icon, 
+      product_status, category_type, create_time, 
+      update_time)
+    values (#{productId,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, #{productPrice,jdbcType=DECIMAL}, 
+      #{productStock,jdbcType=INTEGER}, #{productDescription,jdbcType=VARCHAR}, #{productIcon,jdbcType=VARCHAR}, 
+      #{productStatus,jdbcType=TINYINT}, #{categoryType,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xia.sell.po.ProductInfo">
+    insert into product_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="productName != null">
+        product_name,
+      </if>
+      <if test="productPrice != null">
+        product_price,
+      </if>
+      <if test="sold != null">
+        sold,
+      </if>
+      <if test="productDescription != null">
+        product_description,
+      </if>
+      <if test="productIcon != null">
+        product_icon,
+      </if>
+      <if test="productStatus != null">
+        product_status,
+      </if>
+      <if test="categoryType != null">
+        category_type,
+      </if>
+      <if test="sellerId != null">
+        seller_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="productId != null">
+        #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null">
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productPrice != null">
+        #{productPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="sold != null">
+        #{sold,jdbcType=INTEGER},
+      </if>
+      <if test="productDescription != null">
+        #{productDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="productIcon != null">
+        #{productIcon,jdbcType=VARCHAR},
+      </if>
+      <if test="productStatus != null">
+        #{productStatus,jdbcType=TINYINT},
+      </if>
+      <if test="categoryType != null">
+        #{categoryType,jdbcType=INTEGER},
+      </if>
+      <if test="sellerId != null">
+        #{sellerId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xia.sell.po.ProductInfo">
+    update product_info
+    <set>
+      <if test="productName != null">
+        product_name = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productPrice != null">
+        product_price = #{productPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="sold != null">
+        sold = #{sold,jdbcType=INTEGER},
+      </if>
+      <if test="productDescription != null">
+        product_description = #{productDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="productIcon != null">
+        product_icon = #{productIcon,jdbcType=VARCHAR},
+      </if>
+      <if test="productStatus != null">
+        product_status = #{productStatus,jdbcType=TINYINT},
+      </if>
+      <if test="categoryType != null">
+        category_type = #{categoryType,jdbcType=INTEGER},
+      </if>
+      <if test="sellerId != null">
+        seller_id = #{sellerId,jdbcType=VARCHAR},
+      </if>
+      <if test="remove != null">
+        remove = #{remove,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where product_id = #{productId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xia.sell.po.ProductInfo">
+    update product_info
+    set product_name = #{productName,jdbcType=VARCHAR},
+      product_price = #{productPrice,jdbcType=DECIMAL},
+      product_stock = #{productStock,jdbcType=INTEGER},
+      product_description = #{productDescription,jdbcType=VARCHAR},
+      product_icon = #{productIcon,jdbcType=VARCHAR},
+      product_status = #{productStatus,jdbcType=TINYINT},
+      category_type = #{categoryType,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where product_id = #{productId,jdbcType=VARCHAR}
+  </update>
+  <update id="setRemoveByCategoryType" parameterType="string" >
+    update product_info
+    set remove = 1
+    where category_type  = #{categoryType,jdbcType=VARCHAR}
+  </update>
+
+
+
+</mapper>

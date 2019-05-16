@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xia.sell.dao.WechatSessionMapper">
+  <resultMap id="BaseResultMap" type="com.xia.sell.po.WechatSession">
+    <constructor>
+      <idArg column="session_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="session_key" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="openid" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    session_id, session_key, openid
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from wechat_session
+    where session_id = #{sessionId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from wechat_session
+    where session_id = #{sessionId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xia.sell.po.WechatSession">
+    insert into wechat_session (session_id, session_key, openid
+      )
+    values (#{sessionId,jdbcType=VARCHAR}, #{sessionKey,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xia.sell.po.WechatSession">
+    insert into wechat_session
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="sessionId != null">
+        session_id,
+      </if>
+      <if test="sessionKey != null">
+        session_key,
+      </if>
+      <if test="openid != null">
+        openid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="sessionId != null">
+        #{sessionId,jdbcType=VARCHAR},
+      </if>
+      <if test="sessionKey != null">
+        #{sessionKey,jdbcType=VARCHAR},
+      </if>
+      <if test="openid != null">
+        #{openid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xia.sell.po.WechatSession">
+    update wechat_session
+    <set>
+      <if test="sessionKey != null">
+        session_key = #{sessionKey,jdbcType=VARCHAR},
+      </if>
+      <if test="openid != null">
+        openid = #{openid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where session_id = #{sessionId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xia.sell.po.WechatSession">
+    update wechat_session
+    set session_key = #{sessionKey,jdbcType=VARCHAR},
+      openid = #{openid,jdbcType=VARCHAR}
+    where session_id = #{sessionId,jdbcType=VARCHAR}
+  </update>
+</mapper>

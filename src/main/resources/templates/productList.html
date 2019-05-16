@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>袋鼠鼠-商品管理</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet"  type="text/css" href="../static/css/bootstrap-theme.min.css" th:href="@{/css/bootstrap-theme.min.css}"/>
+    <script type="text/javascript"  src="../static/js/jquery-3.3.1.min.js" th:src="@{/js/jquery-3.3.1.min.js}" defer></script>
+    <script type="text/javascript"  src="../static/js/bootstrap.js" th:src="@{/js/bootstrap.js}" defer></script>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <style>
+        th{
+            text-align: center;
+        }
+        tr{
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+  <div th:replace="navigation :: nav"></div>
+    <div style="width: 90%;margin: 0 auto;">
+        <table class="table table-striped table-hover table-condensed">
+            <caption style="text-align: center;font-size: 18px">商品管理</caption>
+            <thead>
+            <tr>
+                <td>图片</td>
+                <td>商品id</td>
+                <td>商品名</td>
+                <td>商品价格</td>
+                <td>销量</td>
+                <td>描述</td>
+                <td>类别</td>
+                <td>创建时间</td>
+                <td>更新时间</td>
+                <td>状态</td>
+                <td colspan="2">操作</td>
+            </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${sellerProductInfoVOS}" th:object="${item}">
+                    <td><image th:src="*{productIcon}" style="width: 65px;height: 65px"></image></td>
+                    <td th:text="*{productId}" style="height: 75px;line-height: 75px">商品id</td>
+                    <td th:text="*{productName}" style="height: 75px;line-height: 75px">商品名</td>
+                    <td th:text="*{productPrice}" style="height: 75px;line-height: 75px">商品价格</td>
+                    <td th:text="*{sold}" style="height: 75px;line-height: 75px">库存</td>
+                    <td th:text="*{productDescription}" style="height: 75px;line-height: 75px">描述</td>
+                    <td th:text="*{categoryType}" style="height: 75px;line-height: 75px">类别</td>
+                    <td th:text="*{createTime}" style="height: 75px;line-height: 75px">创建时间</td>
+                    <td th:text="*{updateTime}" style="height: 75px;line-height: 75px">更新时间</td>
+                    <td th:text="*{productStatus}" style="height: 75px;line-height: 75px">状态</td>
+                    <td style="height: 75px;line-height: 75px">
+                        <span style="color: #2aabd2;cursor:pointer" th:data-productId="*{productId}" onclick="changeProduct(event)">修改</span>
+                    </td>
+                    <td style="height: 75px;line-height: 75px">
+                        <span id="changeProductStatus" onclick="change(event)" style="height: 75px;line-height: 75px;color: #2aabd2;cursor:pointer" th:text="*{productStatus eq '上架中'} ? '下架' : '上架' " th:data-productId="*{productId}" ></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+  <!--这是整个对话框的容器-->
+  <div class="modal fade" id="productInfo">
+      <!--设置一个居中的对话框-->
+      <div class="modal-dialog">
+          <!--对话框的主体-->
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button class="close" data-dismiss="modal"><span>&times;</span></button>
+                  <h4>修改</h4>
+              </div>
+              <div class="modal-body">
+                  <form action="/seller/product/addProduct" method="post" id="productInfoForm">
+                      <input type="hidden" value="" name="productId" id="productId">
+                      <div class="form-group">
+                          <label for="productName">商品名</label>
+                          <input id="productName" type="text" name="productName" class="form-control" required>
+                      </div>
+                      <div class="form-group">
+                          <label for="productPrice">价格</label>
+                          <input id="productPrice" type="number" name="productPrice" class="form-control">
+                      </div>
+                      <div class="form-group">
+                          <label for="productDescription">描述</label>
+                          <input id="productDescription" type="text" name="productDescription" class="form-control">
+                      </div>
+                      <div class="form-group">
+                          <label>图片</label>
+                          <img  style="width: 65px;height: 65px" id="productImg">
+                          <input type="file" name="productIcon" accept="image/*" id="productIcon">
+                      </div>
+                      <div class="form-group">
+                          <label for="productStatus">状态</label>
+                          <select name="productStatus" id="productStatus" class="form-control">
+                              <option value="0" id="op0">上架</option>
+                              <option value="1" id="op1">下架</option>
+                          </select>
+                      </div>
+                      <div class="form-group">
+                          <label for="categoryType">类别</label>
+                          <select name="categoryType" id="categoryType" class="form-control">
+                          </select>
+                      </div>
+                  </form>
+              </div>
+              <div class="modal-footer">
+                  <button class="btn btn-danger" id="remove">删除商品</button>
+                  <button class="btn btn-primary" id="submit">确认修改</button>
+              </div>
+          </div>
+      </div>
+  </div>
+    <script>
+
+        var var1 = document.querySelector("#productIcon");
+        var1.onchange = function (event) {
+            console.log(event);
+            var file = event.target.files[0];
+            var fileReader = new FileReader();
+            var url = window.URL.createObjectURL(file);
+            console.log(url);
+            document.querySelector("#productImg").setAttribute("src",url);
+        }
+        //改变商品属性--获取属性
+        function changeProduct(event) {
+            var productId=event.target.dataset.productid;
+            var xhr = new XMLHttpRequest();
+            xhr.open("get","/seller/product/oneProduct?productId="+productId,false);
+            xhr.send(null);
+            var info = JSON.parse(xhr.responseText);
+            if (info.code == 0){
+                var var1 = info.data.info;
+                document.querySelector("#productId").value=productId;
+                document.querySelector("#productName").value=var1.productName;
+                document.querySelector("#productPrice").value=var1.productPrice;
+                document.querySelector("#productDescription").value=var1.productDescription;
+                document.querySelector("#productImg").setAttribute("src",var1.productIcon);
+                var1.productStatus == 0 ? document.querySelector("#op0").selected='true':document.querySelector("#op1").selected=true;
+                var cateBox = document.querySelector("#categoryType");
+                cateBox.innerHTML='';
+                var cates = info.data.cate;
+                for (var i = 0; i<cates.length; i++){
+                    var op = new Option(cates[i].categoryName,cates[i].categoryType);
+                    if (var1.categoryType==cates[i].categoryType){
+                        op.selected=true;
+                    }
+                    cateBox.add(op,undefined);
+                }
+                $("#productInfo").modal();
+            }else{
+                alert("操作失败："+info.msg);
+            }
+
+        }
+        var remove = document.querySelector("#remove");
+        remove.onclick=function (event) {
+            var productId = document.querySelector("#productId");
+            var xhr = new XMLHttpRequest();
+            xhr.open("get","/seller/product/remove?productId="+productId.value,false);
+            xhr.send(null);
+            var o = JSON.parse(xhr.responseText);
+            if (o.code == 0){
+                alert("删除成功");
+                $('#productInfo').modal("hide");
+                window.location.reload();
+            }else{
+                alert("删除失败:"+o.msg);
+            }
+        }
+
+        var submit = document.querySelector("#submit");
+        //提交更改
+        submit.onclick=function (){
+            // var data= serialize(document.querySelector("#productInfoForm"));
+            var str=document.querySelector("#productPrice").value;
+            var pattern =/^[0-9]+([.]\d{1,2})?$/;
+            if(!pattern.test(str)){
+                alert("请输入数字,最高保留两位小数");
+                return false;
+            }
+            var data = new FormData(document.forms[0]);
+            var xhr = new XMLHttpRequest();
+            xhr.open("post","/seller/product/changeProduct",false);
+            xhr.send(data);
+            var o = JSON.parse(xhr.responseText);
+            if (o.code == 0){
+                alert("修改成功");
+                $('#productInfo').modal("hide");
+                window.location.reload();
+            }else{
+                alert("修改失败:"+o.msg);
+            }
+        }
+
+
+        //更改商品上下架状态
+        function change(event) {
+            var productId=event.target.dataset.productid;
+            var xhr = new XMLHttpRequest();
+            xhr.open("get","/seller/product/changeStatus?productId="+productId,false);
+            xhr.send(null);
+            var o = JSON.parse(xhr.responseText);
+            if (o.code == 0){
+                alert("操作成功");
+                window.location.reload();
+            }else{
+                alert("操作失败："+o.msg);
+            }
+        }
+    </script>
+</body>
+</html>

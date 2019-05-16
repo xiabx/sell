@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>袋鼠鼠-订单管理</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet"  type="text/css" href="../static/css/bootstrap-theme.min.css" th:href="@{/css/bootstrap-theme.min.css}"/>
+    <script type="text/javascript"  src="../static/js/jquery-3.3.1.min.js" th:src="@{/js/jquery-3.3.1.min.js}" defer></script>
+    <script type="text/javascript"  src="../static/js/bootstrap.js" th:src="@{/js/bootstrap.js}" defer></script>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <style>
+        th{
+            text-align: center;
+        }
+        tr{
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="navigation :: nav"></div>
+    <div class="container">
+        <div class="row">
+            <table class="table table-striped table-hover ">
+                <caption style="text-align: center;font-size: 18px">订单管理</caption>
+                <thead>
+                    <tr>
+                        <th>订单id</th>
+                        <th>姓名</th>
+                        <th>手机号</th>
+                        <th>地址</th>
+                        <th>金额</th>
+                        <th>订单状态</th>
+                        <th>创建时间</th>
+                        <th>详情</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="order:${sellerOrderVO}">
+                        <td th:text="${order.getOrderId()}">123</td>
+                        <td th:text="${order.getBuyerName()}">123</td>
+                        <td th:text="${order.getBuyerPhone()}">123</td>
+                        <td th:text="${order.getLocation() + order.getDetail() }">123</td>
+                        <td th:text="${order.getOrderAmount()}">123</td>
+                        <td th:text="${order.getOrderStatus()}">123</td>
+                        <td th:text="${order.getCreateTime()}">123</td>
+                        <td >
+                            <span th:data-orderId="${order.getOrderId()}" class="orderDetail" style="color: #2aabd2;cursor:pointer">详情</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="pull-right">
+                <ul class="pagination" >
+
+                    <li th:class="${pageInfo['isFirstPage']} ? 'disabled' : '' ">
+                        <a href="#" th:href="@{'/seller/order/list?page='+${pageInfo['prePage']}}">上一页</a>
+                    </li>
+
+                    <li th:each="i : ${#numbers.sequence(1,pageInfo['pages'])}" th:class="${i == pageInfo['pageNum']} ? 'active' : ''">
+                        <a href="#" th:href="@{'/seller/order/list?page='+${i}}" th:text="${i}" ></a>
+                    </li>
+
+                    <li class="disabled" th:class="${pageInfo['isLastPage']} ? 'disabled' : '' ">
+                        <a href="#"  th:href="@{'/seller/order/list?page='+${pageInfo['nextPage']}}">下一页</a>
+                    </li>
+                </ul>
+            </div>
+         </div>
+    </div>
+    <!--订单详情-->
+    <div class="modal fade" id="orderDetail">
+        <!--设置一个居中的对话框-->
+        <div class="modal-dialog">
+            <!--对话框的主体-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" data-dismiss="modal"><span>&times;</span></button>
+                    <h4>订单详情</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <td>商品id</td>
+                                <td>商品名称</td>
+                                <td>单价</td>
+                                <td>数量</td>
+                                <td>金额</td>
+                            </tr>
+                        </thead>
+                        <tbody id="orderDetailBody">
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" data-dismiss="modal" id="takeOrder" style="display: none">接单</button>
+                    <button class="btn btn-danger" data-dismiss="modal" id="cancelOrder" style="display: none">取消订单</button>
+                    <button class="btn btn-success" data-dismiss="modal" id="distribution" style="display: none">已送出</button>
+                    <button class="btn btn-success" data-dismiss="modal" id="distributionFinish" style="display: none">配送完成</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!--这是整个对话框的容器-->
+    <div class="modal fade" id="newOrderModal">
+        <!--设置一个居中的对话框-->
+        <div class="modal-dialog">
+            <!--对话框的主体-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" data-dismiss="modal"><span>&times;</span></button>
+                    <h4>您有新的袋鼠鼠外卖订单</h4>
+                </div>
+                <div class="modal-body" id="newOrderBody">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <audio src="/audio/audio.mp3" loop="loop" id="music">no audio</audio>
+    <script>
+        // var webSocket=new WebSocket('wss://www.xbxmxx.top:8443/websocket');
+        var webSocket=new WebSocket('ws://localhost:80/websocket');
+        webSocket.onopen=function () {
+            console.log("连接建立成功");
+        }
+        var newOrderCount=0;
+        var audio = document.querySelector("#music");
+        webSocket.onmessage=function (event) {
+            var data = JSON.parse(event.data);
+            // todo 设置获取商家id然后判断是否显示sellerId
+            if (data.sellerId == document.querySelector("#hidden").innerHTML) {
+                newOrderCount++;
+                var items = "";
+                for (var i = 0; i < data.newOrderList.length; i++) {
+                    items += " <tr>\n" +
+                        "     <td>" + data.newOrderList[i].productId + "</td>\n" +
+                        "     <td>" + data.newOrderList[i].productName + "</td>\n" +
+                        "     <td>" + data.newOrderList[i].productPrice + "</td>\n" +
+                        "     <td>" + data.newOrderList[i].productQuantity + "</td>\n" +
+                        "     <td>" + data.newOrderList[i].itemAmount + "</td>\n" +
+                        "</tr>"
+                }
+                var body = document.querySelector("#newOrderBody");
+                body.insertAdjacentHTML("beforeend",
+                    "<div style=\"display: block\" class=\"" + data.orderId + "\">\n" +
+                    "                        <table class=\"table table-hover table-condensed\">\n" +
+                    "                            <thead>\n" +
+                    "                            <tr>\n" +
+                    "                                <td>商品id</td>\n" +
+                    "                                <td>商品名称</td>\n" +
+                    "                                <td>单价</td>\n" +
+                    "                                <td>数量</td>\n" +
+                    "                                <td>金额</td>\n" +
+                    "                            </tr>\n" +
+                    "                            </thead>\n" +
+                    "                            <tbody id=\"newOrderDetailBody\">\n" +
+                    "\n" + items + "  <tr>\n" +
+                    "                                    <td>总计</td>\n" +
+                    "                                    <td></td>\n" +
+                    "                                    <td></td>\n" +
+                    "                                    <td></td>\n" +
+                    "                                    <td>" + data.amount + "</td>\n" +
+                    "                                </tr>" +
+                    "                            </tbody>\n" +
+                    "                        </table>\n" +
+                    "                    <div class=\"buttons\" style=\"position: relative;right:-432px;margin-bottom: 11px\">\n" +
+                    "                        <button class=\"btn btn-success\" data-dismiss=\"modal\"  data-orderId=\"" + data.orderId + "\" onclick=\"takeOrder(event)\">接单</button>\n" +
+                    "                        <button class=\"btn btn-danger\" data-dismiss=\"modal\" data-orderId=\"" + data.orderId + "\"  onclick=\"cancelOrder(event)\">取消订单</button>\n" +
+                    "                    </div>" +
+                    "</div>"
+                )
+                if (newOrderCount == 1) {
+                    $('#newOrderModal').modal({backdrop:false});
+                }
+                audio.play();
+            }
+        }
+        webSocket.onclose=function () {
+            console.log('连接关闭');
+        }
+
+        window.onbeforeunload=function () {
+            webSocket.close();
+        }
+        function hideItem(className) {
+            var item = document.querySelector("."+className);
+            item.style.display="none";
+        }
+
+        //新订单 接单
+        function takeOrder (event) {
+            audio.pause();
+            var orderId = event.target.dataset.orderid;
+            var xhr = new XMLHttpRequest();
+            xhr.open("get","/seller/order/alreadyOrder?orderId="+orderId,false);
+            xhr.send(null);
+            var takeOrderObj = JSON.parse(xhr.responseText);
+            //todo 弹出框执行一个事件结束后自动隐藏。
+            if (takeOrderObj.code == 0){
+                alert("接单成功");
+                hideItem(orderId);
+                newOrderCount--;
+                window.location.reload();
+            }else{
+                alert("接单失败");
+                $('#orderDetail').modal("hide");
+            }
+        }
+        //新订单 取消订单
+        function cancelOrder() {
+            audio.pause();
+            var orderId = event.target.dataset.orderid;
+            var xhr = new XMLHttpRequest();
+            xhr.open("get","/seller/order/cancel?orderId="+orderId,false);
+            xhr.send(null);
+            var cancelOrderObj = JSON.parse(xhr.responseText);
+            if (cancelOrderObj.code == 0){
+                alert("订单取消成功");
+                newOrderCount--;
+                window.location.reload();
+            }else{
+                alert("订单取消失败："+cancelOrderObj.msg);
+                $('#orderDetail').modal("hide");
+            }
+        }
+
+        var all = document.querySelectorAll(".orderDetail");
+        for (var i=0;i<all.length;i++){
+            all[i].onclick=showDetailFun;
+        }
+        //订单详情
+        function showDetailFun (event) {
+            var body = document.querySelector("#orderDetailBody");
+            body.innerHTML="";
+            var orderId = event.target.dataset.orderid;
+            var xhr = new XMLHttpRequest();
+            xhr.open("get","/seller/order/details?orderId="+orderId,false);
+            xhr.send(null);
+            var o = JSON.parse(xhr.responseText);
+            var details=o.items;
+            for (var i=0;i<details.length;i++){
+                body.insertAdjacentHTML("beforeend","<tr>"+'<td>'+details[i].productId+'</td>'+'<td>'+details[i].productName+'</td>'+'<td>'+Math.floor(details[i].productPrice * 100) / 100+'</td>'+'<td>'+details[i].productQuantity+'</td>'+'<td>'+details[i].productQuantity*details[i].productPrice+'</td>'+"</tr>")
+            }
+            var takeOrder = document.querySelector("#takeOrder");
+            var cancelOrder = document.querySelector("#cancelOrder");
+            var distribution = document.querySelector("#distribution");
+            var distributionFinish = document.querySelector("#distributionFinish");
+            if(o.orderStatus == 1){
+                //未接单
+                takeOrder.style.display="inline-block";
+                cancelOrder.style.display="inline-block";
+                distribution.style.display="none";
+                distributionFinish.style.display="none";
+                //接单
+                takeOrder.onclick=function () {
+                    xhr.open("get","/seller/order/alreadyOrder?orderId="+orderId,false);
+                    xhr.send(null);
+                    var takeOrderObj = JSON.parse(xhr.responseText);
+                    if (takeOrderObj.code == 0){
+                        alert("接单成功");
+                        $('#orderDetail').modal("hide");
+                        window.location.reload();
+                    }else{
+                        alert("接单失败");
+                        $('#orderDetail').modal("hide");
+                    }
+                }
+                //取消订单
+                cancelOrder.onclick=function () {
+                    xhr.open("get","/seller/order/cancel?orderId="+orderId,false);
+                    xhr.send(null);
+                    var cancelOrderObj = JSON.parse(xhr.responseText);
+                    if (cancelOrderObj.code == 0){
+                        alert("订单取消成功");
+                        $('#orderDetail').modal("hide");
+                        window.location.reload();
+                    }else{
+                        alert("订单取消失败："+cancelOrderObj.msg);
+                        $('#orderDetail').modal("hide");
+                    }
+                }
+            }else if(o.orderStatus == 2){
+                //待配送
+                takeOrder.style.display="none";
+                cancelOrder.style.display="none";
+                distribution.style.display="inline-block";
+                distributionFinish.style.display="none";
+                distribution.onclick=function () {
+                    xhr.open("get","/seller/order/setDistribution?orderId="+orderId,false);
+                    xhr.send(null);
+                    var cancelOrderObj = JSON.parse(xhr.responseText);
+                    if (cancelOrderObj.code == 0){
+                        alert("设置订单状态成功");
+                        $('#orderDetail').modal("hide");
+                        window.location.reload();
+                    }else{
+                        alert("设置订单状态失败："+cancelOrderObj.msg);
+                        $('#orderDetail').modal("hide");
+                    }
+                }
+            }else if(o.orderStatus == 6){
+                //配送完成
+                takeOrder.style.display="none";
+                cancelOrder.style.display="none";
+                distribution.style.display="none";
+                distributionFinish.style.display="inline-block";
+                distributionFinish.onclick=function () {
+                    xhr.open("get","/seller/order/setDistributionFinish?orderId="+orderId,false);
+                    xhr.send(null);
+                    var cancelOrderObj = JSON.parse(xhr.responseText);
+                    if (cancelOrderObj.code == 0){
+                        alert("设置订单状态成功");
+                        $('#orderDetail').modal("hide");
+                        window.location.reload();
+                    }else{
+                        alert("设置订单状态失败："+cancelOrderObj.msg);
+                        $('#orderDetail').modal("hide");
+                    }
+                }
+            }
+            $('#orderDetail').modal();
+        }
+    </script>
+</body>
+</html>

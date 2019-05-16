@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xia.sell.dao.BuyerAddressMapper">
+  <resultMap id="BaseResultMap" type="com.xia.sell.po.BuyerAddress">
+    <constructor>
+      <idArg column="address_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="openid" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="latitude" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="longitude" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="location" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="detail" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="buyer_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="buyer_phone" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="create_time" javaType="java.lang.String" jdbcType="TIMESTAMP" />
+      <arg column="update_time" javaType="java.lang.String" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    address_id, openid, latitude, longitude,location, detail, buyer_name, buyer_phone,create_time,
+    update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from buyer_address
+    where address_id = #{addressId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByOpenid" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from buyer_address
+    where openid = #{openid,jdbcType=VARCHAR} ORDER BY create_time
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from buyer_address
+    where address_id = #{addressId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xia.sell.po.BuyerAddress">
+    insert into buyer_address (address_id, openid, latitude, 
+      longitude, detail, buyer_name, 
+      buyer_phone, create_time, update_time
+      )
+    values (#{addressId,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}, #{latitude,jdbcType=VARCHAR}, 
+      #{longitude,jdbcType=VARCHAR}, #{detail,jdbcType=VARCHAR}, #{buyerName,jdbcType=VARCHAR}, 
+      #{buyerPhone,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xia.sell.po.BuyerAddress">
+    insert into buyer_address
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="addressId != null">
+        address_id,
+      </if>
+      <if test="openid != null">
+        openid,
+      </if>
+      <if test="latitude != null">
+        latitude,
+      </if>
+      <if test="longitude != null">
+        longitude,
+      </if>
+      <if test="location != null">
+        location,
+      </if>
+      <if test="detail != null">
+        detail,
+      </if>
+      <if test="buyerName != null">
+        buyer_name,
+      </if>
+      <if test="buyerPhone != null">
+        buyer_phone,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="addressId != null">
+        #{addressId,jdbcType=VARCHAR},
+      </if>
+      <if test="openid != null">
+        #{openid,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null">
+        #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null">
+        #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="location != null">
+        #{location,jdbcType=VARCHAR},
+      </if>
+      <if test="detail != null">
+        #{detail,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerName != null">
+        #{buyerName,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerPhone != null">
+        #{buyerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xia.sell.po.BuyerAddress">
+    update buyer_address
+    <set>
+      <if test="openid != null">
+        openid = #{openid,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null">
+        latitude = #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null">
+        longitude = #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="location != null">
+        location = #{location,jdbcType=VARCHAR},
+      </if>
+      <if test="detail != null">
+        detail = #{detail,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerName != null">
+        buyer_name = #{buyerName,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerPhone != null">
+        buyer_phone = #{buyerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where address_id = #{addressId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xia.sell.po.BuyerAddress">
+    update buyer_address
+    set openid = #{openid,jdbcType=VARCHAR},
+      latitude = #{latitude,jdbcType=VARCHAR},
+      longitude = #{longitude,jdbcType=VARCHAR},
+      detail = #{detail,jdbcType=VARCHAR},
+      buyer_name = #{buyerName,jdbcType=VARCHAR},
+      buyer_phone = #{buyerPhone,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where address_id = #{addressId,jdbcType=VARCHAR}
+  </update>
+</mapper>

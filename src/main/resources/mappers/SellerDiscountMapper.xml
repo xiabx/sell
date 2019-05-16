@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xia.sell.dao.SellerDiscountMapper">
+  <resultMap id="BaseResultMap" type="com.xia.sell.po.SellerDiscount">
+    <constructor>
+      <idArg column="discount_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="seller_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="full" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="reduce" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    discount_id, seller_id, full, reduce, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from seller_discount
+    where discount_id = #{discountId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectBySellerId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from seller_discount
+    where seller_id = #{sellerId,jdbcType=VARCHAR} ORDER BY full
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from seller_discount
+    where discount_id = #{discountId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xia.sell.po.SellerDiscount">
+    insert into seller_discount (discount_id, seller_id, full, 
+      reduce, create_time, update_time
+      )
+    values (#{discountId,jdbcType=VARCHAR}, #{sellerId,jdbcType=VARCHAR}, #{full,jdbcType=INTEGER}, 
+      #{reduce,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xia.sell.po.SellerDiscount">
+    insert into seller_discount
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="discountId != null">
+        discount_id,
+      </if>
+      <if test="sellerId != null">
+        seller_id,
+      </if>
+      <if test="full != null">
+        full,
+      </if>
+      <if test="reduce != null">
+        reduce,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="discountId != null">
+        #{discountId,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerId != null">
+        #{sellerId,jdbcType=VARCHAR},
+      </if>
+      <if test="full != null">
+        #{full,jdbcType=INTEGER},
+      </if>
+      <if test="reduce != null">
+        #{reduce,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xia.sell.po.SellerDiscount">
+    update seller_discount
+    <set>
+      <if test="sellerId != null">
+        seller_id = #{sellerId,jdbcType=VARCHAR},
+      </if>
+      <if test="full != null">
+        full = #{full,jdbcType=INTEGER},
+      </if>
+      <if test="reduce != null">
+        reduce = #{reduce,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where discount_id = #{discountId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xia.sell.po.SellerDiscount">
+    update seller_discount
+    set seller_id = #{sellerId,jdbcType=VARCHAR},
+      full = #{full,jdbcType=INTEGER},
+      reduce = #{reduce,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where discount_id = #{discountId,jdbcType=VARCHAR}
+  </update>
+</mapper>

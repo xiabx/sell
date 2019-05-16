@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet"  type="text/css" href="../static/css/bootstrap-theme.min.css" th:href="@{/css/bootstrap-theme.min.css}"/>
+    <script type="text/javascript"  src="../static/js/jquery-3.3.1.min.js" th:src="@{/js/jquery-3.3.1.min.js}" defer></script>
+    <script type="text/javascript"  src="../static/js/bootstrap.js" th:src="@{/js/bootstrap.js}" defer></script>
+    <link rel="stylesheet" href="../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <style>
+        #out{
+            position: absolute;
+            top: 200px;
+            left: 150px;
+            width: 400px;
+            height: 400px;
+            background-color: white;
+        }
+        .form{
+            width: 350px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body style="background-image:url('http://waimai1996.bj.bcebos.com/back.png?authorization=bce-auth-v1/0b8f90ee057342ce960257df33e0ec7b/2018-10-11T12:24:30Z/-1/host/8a563013505d7178a5e409f11566552f0e15a4b89ac4133faf439f439bffeedf');width: 100%;height: 100%;" >
+    <div id="out">
+        <div style="text-align:center;padding-bottom: 40px;padding-top:20px;font-size: 25px">袋鼠鼠外卖商家端</div>
+        <div class="form">
+
+            <form class="layui-form" method="post" action="/seller/tologin">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户名</label>
+                    <div class="layui-input-inline" style="width: 244px;">
+                        <input type="text" name="username" required  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">密码</label>
+                    <div class="layui-input-inline" style="width: 244px;">
+                        <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" type="submit" id="loginSubmit" style="width: 131px;position: relative;top: 35px;">登陆</button>
+                    </div>
+
+                </div>
+            </form>
+
+
+
+
+
+            <!--<form method="post" action="/seller/tologin">-->
+                <!--<div class="form-group">-->
+                    <!--<label for="username">用户名</label>-->
+                    <!--<input type="text" id="username" class="form-control" name="username">-->
+                <!--</div>-->
+                <!--<div class="form-group">-->
+                    <!--<label for="password">密码</label>-->
+                    <!--<input type="text" id="password" class="form-control" name="password">-->
+                <!--</div>-->
+                <!--<div class="form-group">-->
+                    <!--<input name="isRememberMe" type="checkbox"> 记住我-->
+                <!--</div>-->
+                <!--<button type="submit" class="btn btn-success">登陆</button>-->
+            <!--</form>-->
+            <div style="    position: relative;
+    top: -52px;
+    left: 89px;
+    color: red;" th:if="${loginError}" th:text="${errorMsg}">这是你永远看不到的东西。</div>
+        </div>
+    </div>
+    <script src="../static/layui/layui.js" th:href="@{/layui/layui.js}"></script>
+    <script>
+        // $("#loginSubmit").onclick(function(event) {
+        //     $.ajax({
+        //         type:"post",
+        //         url:"/seller/tologin",
+        //         data:new FormData(document.forms[0]),
+        //         success:function (data) {
+        //             console.log(data);
+        //         }
+        //     })
+        // })
+        // layui.use('form', function(){
+        //     var form = layui.form;
+        //
+        //     //监听提交
+        //     form.on('submit(formDemo)', function(data){
+        //         layer.msg(JSON.stringify(data.field));
+        //         return false;
+        //     });
+        // });
+    </script>
+</body>
+</html>

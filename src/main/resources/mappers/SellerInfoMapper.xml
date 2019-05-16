@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xia.sell.dao.SellerInfoMapper">
+  <resultMap id="BaseResultMap" type="com.xia.sell.po.SellerInfo">
+    <constructor>
+      <idArg column="id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="username" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="password" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="shop_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="longitude" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="latitude" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="shop_sold" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="shop_icon" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="begin_fee" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="distribution_fee" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+  <!--id, shop_name,longitude,latitude,begin_fee,distribution_fee,shop_icon-->
+  <resultMap id="resultMap2" type="com.xia.sell.po.SellerInfo">
+    <id column="id" property="id" javaType="string" jdbcType="VARCHAR"/>
+    <result column="shop_name" property="shopName" javaType="string" jdbcType="VARCHAR"/>
+    <result column="longitude" property="longitude" javaType="string" jdbcType="VARCHAR"/>
+    <result column="latitude" property="latitude" javaType="string" jdbcType="VARCHAR"/>
+    <result column="shop_sold" property="shopSold" javaType="integer" jdbcType="VARCHAR"/>
+    <result column="begin_fee" property="beginFee" javaType="integer" jdbcType="INTEGER"/>
+    <result column="distribution_fee" property="distributionFee" javaType="integer" jdbcType="INTEGER"/>
+    <result column="shop_icon" property="shopIcon" javaType="string" jdbcType="VARCHAR"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, username, password, shop_name,longitude,latitude,shop_sold,begin_fee,distribution_fee,shop_icon, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from seller_info
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from seller_info
+    where username = #{username,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getAllSellerInfo" resultMap="resultMap2">
+    select
+    <include refid="Base_Column_List" />
+    from seller_info
+  </select>
+  <select id="getAllSellerInfoOrderSold" resultMap="resultMap2">
+    select
+    <include refid="Base_Column_List" />
+    from seller_info ORDER BY shop_sold DESC
+  </select>
+
+  <select id="getSellerInfoByCategoryOrderSold" parameterType="string" resultMap="resultMap2">
+    select
+    id, shop_name,longitude,latitude,shop_sold,begin_fee,distribution_fee,shop_icon
+    from seller_info AS si INNER JOIN seller_category AS sc ON si.id = sc.seller_id WHERE category_id = #{category} ORDER  BY  shop_sold DESC
+  </select>
+
+  <select id="getSellerInfoByCategory" parameterType="string" resultMap="resultMap2">
+    select
+    id, shop_name,longitude,latitude,shop_sold,begin_fee,distribution_fee,shop_icon
+    from seller_info AS si INNER JOIN seller_category AS sc ON si.id = sc.seller_id WHERE category_id = #{category}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from seller_info
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xia.sell.po.SellerInfo">
+    insert into seller_info (id, username, password, 
+      create_time, update_time)
+    values (#{id,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xia.sell.po.SellerInfo">
+    insert into seller_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="username != null">
+        username,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xia.sell.po.SellerInfo">
+    update seller_info
+    <set>
+      <if test="username != null">
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="shopName != null">
+        shop_name = #{shopName,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null">
+        longitude = #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null">
+        latitude = #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="shopSold != null">
+        shop_sold = #{shopSold,jdbcType=VARCHAR},
+      </if>
+      <if test="beginFee != null">
+        begin_fee = #{beginFee,jdbcType=VARCHAR},
+      </if>
+      <if test="distributionFee != null">
+        distribution_fee = #{distributionFee,jdbcType=VARCHAR},
+      </if>
+      <if test="shopIcon != null">
+        shop_icon = #{shopIcon,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xia.sell.po.SellerInfo">
+    update seller_info
+    set username = #{username,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

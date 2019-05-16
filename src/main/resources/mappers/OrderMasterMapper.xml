@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xia.sell.dao.OrderMasterMapper">
+  <resultMap id="BaseResultMap" type="com.xia.sell.po.OrderMaster">
+    <constructor>
+      <idArg column="order_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="buyer_openid" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="buyer_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="buyer_location" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="buyer_address" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="buyer_phone" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="order_amount" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+      <arg column="order_status" javaType="java.lang.Byte" jdbcType="TINYINT" />
+      <arg column="seller_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="note" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="remove" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="create_time" javaType="java.lang.String" jdbcType="TIMESTAMP" />
+      <arg column="update_time" javaType="java.lang.String" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    order_id, buyer_openid, buyer_name,buyer_location,buyer_address,buyer_phone, order_amount, order_status,
+     seller_id,note, remove, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from order_master
+    where order_id = #{orderId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByBuyerOpenId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from order_master
+    where buyer_openid = #{buyerOpenId,jdbcType=VARCHAR} ORDER BY create_time DESC
+  </select>
+  <select id="selectAllOrders" resultMap="BaseResultMap" parameterType="string">
+    select
+    <include refid="Base_Column_List" />
+    from order_master WHERE seller_id = #{sellerId} AND order_status!=0 ORDER BY create_time DESC
+  </select>
+  <select id="selectByOpenidAndOrderId" parameterType="hashmap" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from order_master where buyer_openid = #{buyerOpenid} and order_id = #{orderId}
+  </select>
+  <select id="selectDecimalByOpenidOrderId" parameterType="hashmap" resultType="double">
+    select order_amount from order_master where buyer_openid = #{buyerOpenid} and order_id = #{orderId}
+  </select>
+  <select id="selectByOrderId" parameterType="string" resultMap="BaseResultMap">
+    select * from order_master where order_id = #{orderId}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from order_master
+    where order_id = #{orderId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xia.sell.po.OrderMaster">
+    insert into order_master (order_id, buyer_name, buyer_phone, 
+      buyer_address, buyer_openid, order_amount, 
+      order_status, pay_status, create_time, 
+      update_time)
+    values (#{orderId,jdbcType=VARCHAR}, #{buyerName,jdbcType=VARCHAR}, #{buyerPhone,jdbcType=VARCHAR}, 
+      #{buyerAddress,jdbcType=VARCHAR}, #{buyerOpenid,jdbcType=VARCHAR}, #{orderAmount,jdbcType=DECIMAL}, 
+      #{orderStatus,jdbcType=TINYINT}, #{payStatus,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xia.sell.po.OrderMaster">
+    insert into order_master
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="orderId != null">
+        order_id,
+      </if>
+      <if test="buyerOpenid != null">
+        buyer_openid,
+      </if>
+      <if test="buyerName != null">
+        buyer_name,
+      </if>
+      <if test="buyerLocation != null">
+        buyer_location,
+      </if>
+      <if test="buyerAddress != null">
+        buyer_address,
+      </if>
+      <if test="buyerPhone != null">
+        buyer_phone,
+      </if>
+      <if test="orderAmount != null">
+        order_amount,
+      </if>
+      <if test="orderStatus != null">
+        order_status,
+      </if>
+      <if test="sellerId != null">
+        seller_id,
+      </if>
+      <if test="note != null">
+        note,
+      </if>
+      <if test="remove != null">
+        remove,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="orderId != null">
+        #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerOpenid != null">
+        #{buyerOpenid,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerName != null">
+        #{buyerName,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerLocation != null">
+        #{buyerLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerAddress != null">
+        #{buyerAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerPhone != null">
+        #{buyerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="orderAmount != null">
+        #{orderAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="orderStatus != null">
+        #{orderStatus,jdbcType=TINYINT},
+      </if>
+      <if test="sellerId != null">
+        #{sellerId,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="remove != null">
+        #{remove,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xia.sell.po.OrderMaster">
+    update order_master
+    <set>
+      <if test="buyerOpenid != null">
+        buyer_openid= #{buyerOpenid,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerName != null">
+        buyer_name= #{buyerName,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerLocation != null">
+        buyer_location= #{buyerLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerAddress != null">
+        buyer_address= #{buyerAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerPhone != null">
+        buyer_phone= #{buyerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="orderAmount != null">
+        order_amount= #{orderAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="orderStatus != null">
+        order_status= #{orderStatus,jdbcType=TINYINT},
+      </if>
+      <if test="sellerId != null">
+        seller_id=#{sellerId,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        note=#{note,jdbcType=VARCHAR},
+      </if>
+      <if test="remove != null">
+        remove=#{remove,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time= #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time=  #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where order_id = #{orderId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xia.sell.po.OrderMaster">
+    update order_master
+    set buyer_name = #{buyerName,jdbcType=VARCHAR},
+      buyer_phone = #{buyerPhone,jdbcType=VARCHAR},
+      buyer_address = #{buyerAddress,jdbcType=VARCHAR},
+      buyer_openid = #{buyerOpenid,jdbcType=VARCHAR},
+      order_amount = #{orderAmount,jdbcType=DECIMAL},
+      order_status = #{orderStatus,jdbcType=TINYINT},
+      pay_status = #{payStatus,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where order_id = #{orderId,jdbcType=VARCHAR}
+  </update>
+</mapper>

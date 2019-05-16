@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xia.sell.dao.OrderCommentMapper">
+  <resultMap id="BaseResultMap" type="com.xia.sell.po.OrderComment">
+    <constructor>
+      <idArg column="comment_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="seller_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="buyer_openid" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="buyer_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="buyer_icon" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="content" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="star" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="create_time" javaType="java.lang.String" jdbcType="TIMESTAMP" />
+      <arg column="update_time" javaType="java.lang.String" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    comment_id, seller_id, buyer_openid,buyer_name, buyer_icon,content, star, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from order_comment
+    where comment_id = #{commentId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectBySellerId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from order_comment
+    where seller_id = #{sellerId,jdbcType=VARCHAR} ORDER BY create_time DESC
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from order_comment
+    where comment_id = #{commentId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xia.sell.po.OrderComment">
+    insert into order_comment (comment_id, seller_id, buyer_openid, 
+      content, star, create_time,
+      update_time)
+    values (#{commentId,jdbcType=VARCHAR}, #{sellerId,jdbcType=VARCHAR}, #{buyerOpenid,jdbcType=VARCHAR}, 
+      #{content,jdbcType=VARCHAR}, #{star,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xia.sell.po.OrderComment">
+    insert into order_comment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="commentId != null">
+        comment_id,
+      </if>
+      <if test="sellerId != null">
+        seller_id,
+      </if>
+      <if test="buyerOpenid != null">
+        buyer_openid,
+      </if>
+      <if test="buyerName != null">
+        buyer_name,
+      </if>
+      <if test="buyerIcon != null">
+        buyer_icon,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="star != null">
+        star,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="commentId != null">
+        #{commentId,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerId != null">
+        #{sellerId,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerOpenid != null">
+        #{buyerOpenid,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerName != null">
+        #{buyerName,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerIcon != null">
+        #{buyerIcon,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="star != null">
+        #{star,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xia.sell.po.OrderComment">
+    update order_comment
+    <set>
+      <if test="sellerId != null">
+        seller_id = #{sellerId,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerOpenid != null">
+        buyer_openid = #{buyerOpenid,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="star != null">
+        star = #{star,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where comment_id = #{commentId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xia.sell.po.OrderComment">
+    update order_comment
+    set seller_id = #{sellerId,jdbcType=VARCHAR},
+      buyer_openid = #{buyerOpenid,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      star = #{star,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where comment_id = #{commentId,jdbcType=VARCHAR}
+  </update>
+</mapper>

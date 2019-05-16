@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>袋鼠鼠-类目管理</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet"  type="text/css" href="../static/css/bootstrap-theme.min.css" th:href="@{/css/bootstrap-theme.min.css}"/>
+    <script type="text/javascript"  src="../static/js/jquery-3.3.1.min.js" th:src="@{/js/jquery-3.3.1.min.js}" defer></script>
+    <script type="text/javascript"  src="../static/js/bootstrap.js" th:src="@{/js/bootstrap.js}" defer></script>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<style>
+    td{
+        text-align: center;
+    }
+</style>
+<body>
+    <div th:replace="navigation :: nav"></div>
+    <div class="container">
+        <table class="table table-striped table-hover table-condensed">
+            <caption style="text-align: center;font-size: 18px">类目管理</caption>
+            <thead >
+                <tr>
+                    <td>类目名</td>
+                    <td>创建时间</td>
+                    <td>更新时间</td>
+                    <td colspan="2">操作</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${list}">
+                    <td th:text="${item.categoryName}">类目名</td>
+                    <td th:text="${item.createTime}">创建时间</td>
+                    <td th:text="${item.updateTime}">更新时间</td>
+                    <td><span onclick="change(event)" th:data-cateid="${item.categoryId}" th:data-catename="${item.categoryName}" style="color: #2aabd2;cursor:pointer">修改</span></td>
+                    <td><span onclick="remove(event)" th:data-cateid="${item.categoryId}" style="color: #2aabd2;cursor:pointer">删除</span></td>
+                </tr>
+            </tbody>
+        </table>
+    <button class="btn btn-default btn-lg" onclick="add(event)" style="float: right">新增类目</button>
+    </div>
+<script>
+    function remove(event) {
+        if (confirm("同时删除分类下所有商品，确认删除吗？")){
+            var cateid = event.target.dataset.cateid;
+            var xhr = new XMLHttpRequest();
+            xhr.open("get","/seller/cate/remove?cateId="+cateid,false);
+            xhr.send(null);
+            var o = JSON.parse(xhr.responseText);
+            if (o.code == 0){
+                alert("成功！");
+                window.location.reload();
+            }else{
+                alert("失败，请稍后再试")
+            }
+        }
+
+    }
+    function add(event) {
+        var xhr = new XMLHttpRequest();
+        var result = prompt("请输入新类目名：", "");
+        if (result != null){
+            xhr.open("get","/seller/cate/add?newName="+result,false);
+            xhr.send(null);
+            var o = JSON.parse(xhr.responseText);
+            if (o.code == 0){
+                alert("成功！");
+                window.location.reload();
+            }else{
+                alert("失败，请稍后再试")
+            }
+        }
+    }
+    function change(event) {
+        var cateid = event.target.dataset.cateid;
+        var catename = event.target.dataset.catename;
+        var result = prompt("请输入新类目名：", catename);
+        var xhr = new XMLHttpRequest();
+        if (result !== null && result != catename) {
+            xhr.open("get","/seller/cate/change?categoryId="+cateid+"&newName="+result,false);
+            xhr.send(null);
+            var o = JSON.parse(xhr.responseText);
+            if (o.code == 0){
+                alert("成功！");
+                window.location.reload();
+            }else{
+                alert("失败，请稍后再试")
+            }
+        }
+    }
+</script>
+</body>
+</html>
