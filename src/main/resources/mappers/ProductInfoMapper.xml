@@ -65,7 +65,7 @@
 	<select id="selectSellerProductInfoVO" resultMap="ResultMapForSellerProductInfoVO" parameterType="string">
         SELECT
       <include refid="Base_Column_List2" />
-      FROM product_info as i INNER JOIN product_category as c ON i.category_type=c.category_type WHERE i.seller_id = #{sellerId} AND i.remove = 0;
+      FROM product_info as i INNER JOIN product_category as c ON i.category_type=c.category_type WHERE i.seller_id = #{sellerId} AND i.remove = 0
     </select>
 
 	<select id="selectAllProductCategoryTypeByShopId" parameterType="string" resultType="string">

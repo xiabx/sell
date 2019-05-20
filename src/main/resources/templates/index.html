@@ -2,330 +2,878 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>袋鼠鼠-订单管理</title>
+    <title>商家后端</title>
     <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"/>
-    <link rel="stylesheet"  type="text/css" href="../static/css/bootstrap-theme.min.css" th:href="@{/css/bootstrap-theme.min.css}"/>
-    <script type="text/javascript"  src="../static/js/jquery-3.3.1.min.js" th:src="@{/js/jquery-3.3.1.min.js}" defer></script>
-    <script type="text/javascript"  src="../static/js/bootstrap.js" th:src="@{/js/bootstrap.js}" defer></script>
+    <link rel="stylesheet" type="text/css" href="../static/css/bootstrap-theme.min.css"
+          th:href="@{/css/bootstrap-theme.min.css}"/>
+    <script type="text/javascript" src="../static/js/jquery-3.3.1.min.js" th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <script type="text/javascript" src="../static/js/bootstrap.js" th:src="@{/js/bootstrap.js}"></script>
+    <script type="text/javascript" src="../static/js/template-web.js" th:src="@{/js/template-web.js}"></script>
+    <link rel="stylesheet" href="../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}"/>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <style>
-        th{
+
+        tr {
             text-align: center;
         }
-        tr{
+
+        .layui-table th {
             text-align: center;
+            font-weight: 400;
+        }
+
+        th {
+            text-align: center;
+        }
+
+        #content {
+            position: absolute;
+            top: 172px;
+            left: 287px;
+            width: 80%;
+        }
+
+        #title {
+            position: absolute;
+            left: 883px;
+            top: 95px;
+            font-size: 37px;
+        }
+
+        #pages {
+            position: absolute;
+            top: 670px;
+            left: 1400px;
+
         }
     </style>
 </head>
 <body>
-    <div th:replace="navigation :: nav"></div>
-    <div class="container">
-        <div class="row">
-            <table class="table table-striped table-hover ">
-                <caption style="text-align: center;font-size: 18px">订单管理</caption>
+<!--导航条-->
+<ul class="layui-nav" style="border-radius: 0px;">
+    <li class="layui-nav-item">
+        <span>袋鼠外卖商家后台管理系统</span>
+    </li>
+
+    <li class="layui-nav-item" style="float: right;">
+        <input type="hidden" id="hidden" th:value="${session.sellerId}">
+        <a href="javascript:;"><img th:src="${session.shopIcon}" class="layui-nav-img">我</a>
+        <dl class="layui-nav-child">
+            <!--<dd><a href="javascript:;">修改信息</a></dd>-->
+            <dd><a href="/seller/logout">退出</a></dd>
+        </dl>
+    </li>
+</ul>
+<!--左侧导航菜单-->
+<ul class="layui-nav layui-nav-tree" lay-filter="test"
+    style="border-radius: 0px;position: fixed;bottom: 0px;top: 60px;">
+    <li class="layui-nav-item layui-this">
+        <a href="javascript:;" onclick="changeTab(event)" data-tabtype="1">订单管理</a>
+    </li>
+    <li class="layui-nav-item"><a href="javascript:;" onclick="changeTab(event)" data-tabtype="2">类目管理</a></li>
+    <li class="layui-nav-item"><a href="javascript:;" onclick="changeTab(event)" data-tabtype="3">商品管理</a></li>
+    <li class="layui-nav-item"><a href="javascript:;" onclick="changeTab(event)" data-tabtype="5">评价管理</a></li>
+</ul>
+<!--订单管理 内容 -->
+<span id="orderContent">
+    <div id="title">订单管理</div>
+        <div id="content">
+            <table class="layui-table" lay-skin="line">
                 <thead>
-                    <tr>
-                        <th>订单id</th>
-                        <th>姓名</th>
-                        <th>手机号</th>
-                        <th>地址</th>
-                        <th>金额</th>
-                        <th>订单状态</th>
-                        <th>创建时间</th>
-                        <th>详情</th>
-                    </tr>
+                <tr>
+                    <th>订单id</th>
+                    <th>姓名</th>
+                    <th>手机号</th>
+                    <th>地址</th>
+                    <th>金额</th>
+                    <th>订单状态</th>
+                    <th>创建时间</th>
+                    <th>备注</th>
+                    <th>操作</th>
+                </tr>
                 </thead>
-                <tbody>
-                    <tr th:each="order:${sellerOrderVO}">
-                        <td th:text="${order.getOrderId()}">123</td>
-                        <td th:text="${order.getBuyerName()}">123</td>
-                        <td th:text="${order.getBuyerPhone()}">123</td>
-                        <td th:text="${order.getLocation() + order.getDetail() }">123</td>
-                        <td th:text="${order.getOrderAmount()}">123</td>
-                        <td th:text="${order.getOrderStatus()}">123</td>
-                        <td th:text="${order.getCreateTime()}">123</td>
-                        <td >
-                            <span th:data-orderId="${order.getOrderId()}" class="orderDetail" style="color: #2aabd2;cursor:pointer">详情</span>
-                        </td>
-                    </tr>
+                <tbody id="orderTbody">
+
                 </tbody>
             </table>
-            <div class="pull-right">
-                <ul class="pagination" >
+        </div>
+    <!--分页-->
+        <div id="pages">
 
-                    <li th:class="${pageInfo['isFirstPage']} ? 'disabled' : '' ">
-                        <a href="#" th:href="@{'/seller/order/list?page='+${pageInfo['prePage']}}">上一页</a>
-                    </li>
+        </div>
+        <audio src="/audio/audio.mp3" loop="loop" id="music">no audio</audio>
+</span>
+<!--类目管理-->
+<span id="classContent" style="display: none" >
+    <div id="title">类目管理</div>
+    <button class="layui-btn" onclick="addClass(event)" style="position: absolute;right: 87px;top: 130px;">新增类目</button>
+     <div id="content">
+            <table class="layui-table" lay-skin="line">
+                <thead>
+                    <tr>
+                        <th>类目名</th>
+                        <th>创建时间</th>
+                        <th>更新时间</th>
+                        <th colspan="2">操作</th>
+                    </tr>
+                </thead>
+                <tbody id="classTbody">
 
-                    <li th:each="i : ${#numbers.sequence(1,pageInfo['pages'])}" th:class="${i == pageInfo['pageNum']} ? 'active' : ''">
-                        <a href="#" th:href="@{'/seller/order/list?page='+${i}}" th:text="${i}" ></a>
-                    </li>
+                </tbody>
+            </table>
+        </div>
+    <!--分页-->
+        <div id="pages">
 
-                    <li class="disabled" th:class="${pageInfo['isLastPage']} ? 'disabled' : '' ">
-                        <a href="#"  th:href="@{'/seller/order/list?page='+${pageInfo['nextPage']}}">下一页</a>
-                    </li>
-                </ul>
+        </div>
+</span>
+<!--商品管理-->
+<span id="productContent" style="display: none" >
+    <div id="title">商品管理</div>
+    <button class="layui-btn" onclick="addProduct(event)" style="position: absolute;right: 87px;top: 130px;">新增商品</button>
+     <div id="content">
+            <table class="layui-table" lay-skin="line">
+                <thead>
+                    <tr>
+                        <th>图片</th>
+                        <!--<th>商品id</th>-->
+                        <th>商品名</th>
+                        <th>商品价格</th>
+                        <th>销量</th>
+                        <th>描述</th>
+                        <th>类别</th>
+                        <th>创建时间</th>
+                        <th>更新时间</th>
+                        <th>状态</th>
+                        <!--修改、上下架-->
+                        <th colspan="2">操作</th>
+                    </tr>
+                </thead>
+                <tbody id="prductTbody">
+
+                </tbody>
+            </table>
+        </div>
+    <!--分页-->
+        <div id="pages" style="top: 834px;left: 1528px;">
+
+        </div>
+</span>
+<span id="commentContent" style="display: none;">
+    <div id="title">评价列表</div>
+    <div id="content">
+        <div>
+            <div style="float: left;width:100px;height:100px;border-radius:100px;overflow: hidden;"><img style="height: 100px;width: 100px" src="https://img.meituan.net/avatar/7d4eb7515534a7876cddfe21893059a07056.jpg" alt=""></div>
+            <div style="float: left;margin-left: 31px;font-size: 22px;color: #333333;">hello world</div>
+            <div style="margin-left: 20px;height: 20px;line-height: 30px;color: #333333;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2018-12-15 24:12:00
             </div>
-         </div>
+            <div style="margin-top: 58px;margin-left: 130px;font-size: 18px;color: #333333;">还不错，挺好吃的。</div>
+        </div>
+        <hr>
     </div>
-    <!--订单详情-->
-    <div class="modal fade" id="orderDetail">
-        <!--设置一个居中的对话框-->
-        <div class="modal-dialog">
-            <!--对话框的主体-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button class="close" data-dismiss="modal"><span>&times;</span></button>
-                    <h4>订单详情</h4>
-                </div>
-                <div class="modal-body">
-                    <table class="table table-hover table-condensed">
-                        <thead>
-                            <tr>
-                                <td>商品id</td>
-                                <td>商品名称</td>
-                                <td>单价</td>
-                                <td>数量</td>
-                                <td>金额</td>
-                            </tr>
-                        </thead>
-                        <tbody id="orderDetailBody">
+</span>
 
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-success" data-dismiss="modal" id="takeOrder" style="display: none">接单</button>
-                    <button class="btn btn-danger" data-dismiss="modal" id="cancelOrder" style="display: none">取消订单</button>
-                    <button class="btn btn-success" data-dismiss="modal" id="distribution" style="display: none">已送出</button>
-                    <button class="btn btn-success" data-dismiss="modal" id="distributionFinish" style="display: none">配送完成</button>
-                </div>
+<script src="../static/layui/layui.all.js" th:src="@{/layui/layui.all.js}"></script>
+<script id="tpl-classList" type="text/html">
+    {{each data}}
+    <tr>
+        <td>{{$value.categoryName}}</td>
+        <td>{{$value.createTime}}</td>
+        <td>{{$value.updateTime}}</td>
+        <td><a href="javascript:;" onclick="changeClassName(event)" data-classid={{$value.categoryId}}>更改名称</a></td>
+        <td><a href="javascript:;" onclick="deleteClass(event)" data-classid={{$value.categoryId}}>删除</a></td>
+    </tr>
+    {{/each}}
+</script>
+<script id="tpl-productList" type="text/html">
+    {{each data}}
+        <tr>
+            <td><image src="{{$value.productIcon}}" style="width: 65px;height: 65px"></image></td>
+            <!--<td style="height: 75px;line-height: 75px">{{$value.productId}}</td>-->
+            <td style="height: 75px;line-height: 75px">{{$value.productName}}</td>
+            <td style="height: 75px;line-height: 75px">{{$value.productPrice}}</td>
+            <td style="height: 75px;line-height: 75px">{{$value.sold}}</td>
+            <td style="height: 75px;line-height: 75px">{{$value.productDescription}}</td>
+            <td style="height: 75px;line-height: 75px">{{$value.categoryType}}</td>
+            <td style="height: 75px;line-height: 75px">{{$value.createTime}}</td>
+            <td style="height: 75px;line-height: 75px">{{$value.updateTime}}</td>
+            <td style="height: 75px;line-height: 75px">{{$value.productStatus}}</td>
+            <td style="height: 75px;line-height: 75px">
+                <a href="javascript:;" onclick="changeProduct(event)" data-productid="{{$value.productId}}">修改</a>
+                <!--<span style="color: #2aabd2;cursor:pointer" th:data-productId="*{productId}" onclick="changeProduct(event)">修改</span>-->
+            </td>
+            <td style="height: 75px;line-height: 75px">
+                <a href="javascript:;" onclick="changeProductStatus(event)" data-productid="{{$value.productId}}">上架/下架</a>
+                <!--<span id="changeProductStatus" onclick="change(event)" style="height: 75px;line-height: 75px;color: #2aabd2;cursor:pointer" th:text="*{productStatus eq '上架中'} ? '下架' : '上架' " th:data-productId="*{productId}" ></span>-->
+            </td>
+        </tr>
+    {{/each}}
+</script>
+<script id="tpl-orderDetail" type="text/html">
+    <table class="layui-table">
+        <tbody>
+        <tr>
+            <td style="text-align: right;width: 80px">订单号</td>
+            <td>{{data.orderMaster.orderId}}</td>
+        </tr>
+        <tr>
+            <td style="text-align: right;width: 80px">姓名</td>
+            <td>{{data.orderMaster.buyerName}}</td>
+        </tr>
+        <tr>
+            <td style="text-align: right;width: 80px">手机号</td>
+            <td>{{data.orderMaster.buyerPhone}}</td>
+        </tr>
+        <tr>
+            <td style="text-align: right;width: 80px">地址</td>
+            <td>{{data.orderMaster.buyerLocation}}{{data.orderMaster.buyerAddress}}</td>
+        </tr>
+        <tr>
+        <tr>
+            <td style="text-align: right;width: 80px">备注</td>
+            <td>{{data.orderMaster.note}}</td>
+        </tr>
+        <tr>
+            <td style="text-align: right;width: 80px">状态</td>
+            <td>{{data.status}}</td>
+        </tr>
+        <td style="text-align: right;width: 80px">金额</td>
+        <td>{{data.orderMaster.orderAmount}}</td>
+        </tr>
+        <tr>
+            <td style="text-align: right;width: 80px">详情</td>
+            <td>
+                <table class="layui-table">
+                    <thead>
+                    <tr>
+                        <th>商品名</th>
+                        <!--<th>图片</th>-->
+                        <th>数量</th>
+                        <th>小计</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{each data.orderDetails}}
+                    <tr>
+                        <td>{{$value.productName}}</td>
+                        <!--<td><img src="{{$value.productIcon}}"></td>-->
+                        <td>{{$value.productQuantity}}</td>
+                        <td>{{$value.productPrice}}</td>
+                    </tr>
+                    {{/each}}
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</script>
+<script id="tpl-product" type="text/html">
+    {{if data.info == null}}
+    <form class="layui-form" action="/seller/product/addProduct" method="post" id="productInfoForm">
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="productName">商品名</label>
+            <div class="layui-input-block">
+                <input id="productName" type="text" name="productName" class="layui-input" value="" required>
             </div>
         </div>
-    </div>
-
-
-
-    <!--这是整个对话框的容器-->
-    <div class="modal fade" id="newOrderModal">
-        <!--设置一个居中的对话框-->
-        <div class="modal-dialog">
-            <!--对话框的主体-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button class="close" data-dismiss="modal"><span>&times;</span></button>
-                    <h4>您有新的袋鼠鼠外卖订单</h4>
-                </div>
-                <div class="modal-body" id="newOrderBody">
-
-                </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="productPrice">价格</label>
+            <div class="layui-input-block">
+                <input id="productPrice" type="number" name="productPrice" class="layui-input" value=""  required>
             </div>
         </div>
-    </div>
-    <audio src="/audio/audio.mp3" loop="loop" id="music">no audio</audio>
-    <script>
-        // var webSocket=new WebSocket('wss://www.xbxmxx.top:8443/websocket');
-        var webSocket=new WebSocket('ws://localhost:80/websocket');
-        webSocket.onopen=function () {
-            console.log("连接建立成功");
-        }
-        var newOrderCount=0;
-        var audio = document.querySelector("#music");
-        webSocket.onmessage=function (event) {
-            var data = JSON.parse(event.data);
-            // todo 设置获取商家id然后判断是否显示sellerId
-            if (data.sellerId == document.querySelector("#hidden").innerHTML) {
-                newOrderCount++;
-                var items = "";
-                for (var i = 0; i < data.newOrderList.length; i++) {
-                    items += " <tr>\n" +
-                        "     <td>" + data.newOrderList[i].productId + "</td>\n" +
-                        "     <td>" + data.newOrderList[i].productName + "</td>\n" +
-                        "     <td>" + data.newOrderList[i].productPrice + "</td>\n" +
-                        "     <td>" + data.newOrderList[i].productQuantity + "</td>\n" +
-                        "     <td>" + data.newOrderList[i].itemAmount + "</td>\n" +
-                        "</tr>"
-                }
-                var body = document.querySelector("#newOrderBody");
-                body.insertAdjacentHTML("beforeend",
-                    "<div style=\"display: block\" class=\"" + data.orderId + "\">\n" +
-                    "                        <table class=\"table table-hover table-condensed\">\n" +
-                    "                            <thead>\n" +
-                    "                            <tr>\n" +
-                    "                                <td>商品id</td>\n" +
-                    "                                <td>商品名称</td>\n" +
-                    "                                <td>单价</td>\n" +
-                    "                                <td>数量</td>\n" +
-                    "                                <td>金额</td>\n" +
-                    "                            </tr>\n" +
-                    "                            </thead>\n" +
-                    "                            <tbody id=\"newOrderDetailBody\">\n" +
-                    "\n" + items + "  <tr>\n" +
-                    "                                    <td>总计</td>\n" +
-                    "                                    <td></td>\n" +
-                    "                                    <td></td>\n" +
-                    "                                    <td></td>\n" +
-                    "                                    <td>" + data.amount + "</td>\n" +
-                    "                                </tr>" +
-                    "                            </tbody>\n" +
-                    "                        </table>\n" +
-                    "                    <div class=\"buttons\" style=\"position: relative;right:-432px;margin-bottom: 11px\">\n" +
-                    "                        <button class=\"btn btn-success\" data-dismiss=\"modal\"  data-orderId=\"" + data.orderId + "\" onclick=\"takeOrder(event)\">接单</button>\n" +
-                    "                        <button class=\"btn btn-danger\" data-dismiss=\"modal\" data-orderId=\"" + data.orderId + "\"  onclick=\"cancelOrder(event)\">取消订单</button>\n" +
-                    "                    </div>" +
-                    "</div>"
-                )
-                if (newOrderCount == 1) {
-                    $('#newOrderModal').modal({backdrop:false});
-                }
-                audio.play();
-            }
-        }
-        webSocket.onclose=function () {
-            console.log('连接关闭');
-        }
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="productDescription">描述</label>
+            <div class="layui-input-block">
+                <input id="productDescription" type="text" name="productDescription" value="" class="layui-input" required>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">状态</label>
+            <div class="layui-input-block">
+                <select name="productStatus" id="productStatus" lay-verify="required">
+                    <option value="0" >上架</option>
+                    <option value="1" >下架</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">类别</label>
+            <div class="layui-input-block">
+                <select name="categoryType" id="categoryType" >
+                    {{each data.cate}}
+                    <option value="{{$value.categoryType}}" >{{$value.categoryName}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
 
-        window.onbeforeunload=function () {
-            webSocket.close();
-        }
-        function hideItem(className) {
-            var item = document.querySelector("."+className);
-            item.style.display="none";
-        }
+        <div id="pImgOut" style="display: none">
+            <img src="" style="margin-left: 200px;width: 200px;height: 200px;margin-bottom: 18px;" id="productImg">
+        </div>
+        <button style="margin-left: 250px;" type="button" class="layui-btn" id="upProductIcon">
+            <i class="layui-icon">&#xe67c;</i>上传图片
+        </button>
 
-        //新订单 接单
-        function takeOrder (event) {
-            audio.pause();
-            var orderId = event.target.dataset.orderid;
-            var xhr = new XMLHttpRequest();
-            xhr.open("get","/seller/order/alreadyOrder?orderId="+orderId,false);
-            xhr.send(null);
-            var takeOrderObj = JSON.parse(xhr.responseText);
-            //todo 弹出框执行一个事件结束后自动隐藏。
-            if (takeOrderObj.code == 0){
-                alert("接单成功");
-                hideItem(orderId);
-                newOrderCount--;
-                window.location.reload();
-            }else{
-                alert("接单失败");
-                $('#orderDetail').modal("hide");
-            }
-        }
-        //新订单 取消订单
-        function cancelOrder() {
-            audio.pause();
-            var orderId = event.target.dataset.orderid;
-            var xhr = new XMLHttpRequest();
-            xhr.open("get","/seller/order/cancel?orderId="+orderId,false);
-            xhr.send(null);
-            var cancelOrderObj = JSON.parse(xhr.responseText);
-            if (cancelOrderObj.code == 0){
-                alert("订单取消成功");
-                newOrderCount--;
-                window.location.reload();
-            }else{
-                alert("订单取消失败："+cancelOrderObj.msg);
-                $('#orderDetail').modal("hide");
-            }
-        }
+        <input type="hidden" id="productIcon2" name="productIcon2" value="">
+    </form>
+    {{else if data.info != null}}
+    <form class="layui-form" action="/seller/product/addProduct" method="post" id="productInfoForm">
+        <input type="hidden" value="{{data.info.productId}}" name="productId" id="productId">
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="productName">商品名</label>
+            <div class="layui-input-block">
+                <input id="productName" type="text" name="productName" class="layui-input" value="{{data.info.productName}}" required>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="productPrice">价格</label>
+            <div class="layui-input-block">
+                <input id="productPrice" type="number" name="productPrice" class="layui-input" value="{{data.info.productPrice}}"  required>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="productDescription">描述</label>
+            <div class="layui-input-block">
+                <input id="productDescription" type="text" name="productDescription" value="{{data.info.productDescription}}" class="layui-input" required>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">状态</label>
+            <div class="layui-input-block">
+                <select name="productStatus" id="productStatus" lay-verify="required">
+                    <option value="0" {{data.info.productStatus == "0" ? "selected":""}}>上架</option>
+                    <option value="1" {{data.info.productStatus == "1" ? "selected":""}}>下架</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">类别</label>
+            <div class="layui-input-block">
+                <select name="categoryType" id="categoryType" >
+                    {{each data.cate}}
+                    <option value="{{$value.categoryType}}" {{$value.categoryType == data.info.categoryType ? "selected":""}}>{{$value.categoryName}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+        {{if data.info.productIcon != null}}
+        <div>
+            <img src="{{data.info.productIcon}}" style="margin-left: 200px;width: 200px;height: 200px;margin-bottom: 18px;" id="productImg">
+        </div>
+        {{/if}}
+        <button style="margin-left: 250px;" type="button" class="layui-btn" id="upProductIcon">
+            <i class="layui-icon">&#xe67c;</i>上传图片
+        </button>
 
-        var all = document.querySelectorAll(".orderDetail");
-        for (var i=0;i<all.length;i++){
-            all[i].onclick=showDetailFun;
+        <input type="hidden" id="productIcon2" name="productIcon2" value="{{data.info.productIcon}}">
+    </form>
+    {{/if}}
+</script>
+<script>
+    var renderOrderList = function (data) {
+        for (var obj in data.list) {
+            obj = data.list[obj];
+            var s = "<tr>\n" +
+                "                <td>" + obj.orderId + "</td>\n" +
+                "                <td>" + obj.buyerName + "</td>\n" +
+                "                <td>" + obj.buyerPhone + "</td>\n" +
+                "                <td>" + obj.location + obj.detail + "</td>\n" +
+                "                <td>" + obj.orderAmount + "</td>\n" +
+                "                <td>" + obj.orderStatus + "</td>\n" +
+                "                <td>" + obj.createTime + "</td>\n" +
+                "                <td>" + obj.note + "</td>\n" +
+                "                <td>" + "<a href='javascript:;' onclick='showOrderDetail(event)' data-orderid=" + obj.orderId + ">详情</a>" + "</td>\n" +
+                "            </tr>"
+            $("#orderTbody").append($(s));
         }
-        //订单详情
-        function showDetailFun (event) {
-            var body = document.querySelector("#orderDetailBody");
-            body.innerHTML="";
-            var orderId = event.target.dataset.orderid;
-            var xhr = new XMLHttpRequest();
-            xhr.open("get","/seller/order/details?orderId="+orderId,false);
-            xhr.send(null);
-            var o = JSON.parse(xhr.responseText);
-            var details=o.items;
-            for (var i=0;i<details.length;i++){
-                body.insertAdjacentHTML("beforeend","<tr>"+'<td>'+details[i].productId+'</td>'+'<td>'+details[i].productName+'</td>'+'<td>'+Math.floor(details[i].productPrice * 100) / 100+'</td>'+'<td>'+details[i].productQuantity+'</td>'+'<td>'+details[i].productQuantity*details[i].productPrice+'</td>'+"</tr>")
-            }
-            var takeOrder = document.querySelector("#takeOrder");
-            var cancelOrder = document.querySelector("#cancelOrder");
-            var distribution = document.querySelector("#distribution");
-            var distributionFinish = document.querySelector("#distributionFinish");
-            if(o.orderStatus == 1){
-                //未接单
-                takeOrder.style.display="inline-block";
-                cancelOrder.style.display="inline-block";
-                distribution.style.display="none";
-                distributionFinish.style.display="none";
-                //接单
-                takeOrder.onclick=function () {
-                    xhr.open("get","/seller/order/alreadyOrder?orderId="+orderId,false);
-                    xhr.send(null);
-                    var takeOrderObj = JSON.parse(xhr.responseText);
-                    if (takeOrderObj.code == 0){
-                        alert("接单成功");
-                        $('#orderDetail').modal("hide");
-                        window.location.reload();
-                    }else{
-                        alert("接单失败");
-                        $('#orderDetail').modal("hide");
+    }
+    $.ajax({
+        url: "/seller/order/listPage",
+        success: function (data) {
+            renderOrderList(data);
+            //分页
+            layui.use('laypage', function () {
+                var laypage = layui.laypage;
+                laypage.render({
+                    elem: 'pages',
+                    count: data.total,
+                    limit: 10,
+                    jump: function (obj, first) {
+                        //首次不执行
+                        if (first) {
+                            //do something
+                            return;
+                        }
+                        $("#orderTbody").html("");
+                        $.ajax({
+                            url: "/seller/order/listPage?page=" + obj.curr,
+                            success: function (data) {
+                                renderOrderList(data);
+                            }
+                        })
                     }
-                }
-                //取消订单
-                cancelOrder.onclick=function () {
-                    xhr.open("get","/seller/order/cancel?orderId="+orderId,false);
-                    xhr.send(null);
-                    var cancelOrderObj = JSON.parse(xhr.responseText);
-                    if (cancelOrderObj.code == 0){
-                        alert("订单取消成功");
-                        $('#orderDetail').modal("hide");
-                        window.location.reload();
-                    }else{
-                        alert("订单取消失败："+cancelOrderObj.msg);
-                        $('#orderDetail').modal("hide");
-                    }
-                }
-            }else if(o.orderStatus == 2){
-                //待配送
-                takeOrder.style.display="none";
-                cancelOrder.style.display="none";
-                distribution.style.display="inline-block";
-                distributionFinish.style.display="none";
-                distribution.onclick=function () {
-                    xhr.open("get","/seller/order/setDistribution?orderId="+orderId,false);
-                    xhr.send(null);
-                    var cancelOrderObj = JSON.parse(xhr.responseText);
-                    if (cancelOrderObj.code == 0){
-                        alert("设置订单状态成功");
-                        $('#orderDetail').modal("hide");
-                        window.location.reload();
-                    }else{
-                        alert("设置订单状态失败："+cancelOrderObj.msg);
-                        $('#orderDetail').modal("hide");
-                    }
-                }
-            }else if(o.orderStatus == 6){
-                //配送完成
-                takeOrder.style.display="none";
-                cancelOrder.style.display="none";
-                distribution.style.display="none";
-                distributionFinish.style.display="inline-block";
-                distributionFinish.onclick=function () {
-                    xhr.open("get","/seller/order/setDistributionFinish?orderId="+orderId,false);
-                    xhr.send(null);
-                    var cancelOrderObj = JSON.parse(xhr.responseText);
-                    if (cancelOrderObj.code == 0){
-                        alert("设置订单状态成功");
-                        $('#orderDetail').modal("hide");
-                        window.location.reload();
-                    }else{
-                        alert("设置订单状态失败："+cancelOrderObj.msg);
-                        $('#orderDetail').modal("hide");
-                    }
-                }
-            }
-            $('#orderDetail').modal();
+                });
+            });
         }
-    </script>
+    })
+
+    //订单详情展示
+    function showOrderDetail(e) {
+        var orderId = e.target.dataset.orderid;
+        $.ajax({
+            url: "/seller/order/details?orderId=" + orderId,
+            success: function (data) {
+                renderOrderDetail(data);
+            }
+        })
+    }
+
+    //刷新订单列表
+    function refreshOrderList() {
+        var curr = document.querySelectorAll("em")[1].innerHTML;
+        $.ajax({
+            url: "/seller/order/listPage?page=" + curr,
+            success: function (data) {
+                $("#orderTbody").html("");
+                renderOrderList(data);
+            }
+        })
+    }
+
+    //渲染详情页
+    function renderOrderDetail(data) {
+        var s = template("tpl-orderDetail", {
+            data
+        });
+        var btns = ['关闭']
+        switch (data.orderMaster.orderStatus) {
+            case 1:
+                btns = ["接单", "拒绝接单", '关闭'];
+                break;
+            case 2:
+                btns = ["订单送出", '关闭'];
+                break;
+            case 6:
+                btns = ["订单完成", '关闭'];
+                break;
+        }
+        layui.use('layer', function () {
+            var layer = layui.layer;
+            layer.open({
+                title: "订单详情",
+                area: ['500px', ''],
+                maxHeight: "700px",
+                content: s,
+                btn: btns,
+                yes: function (index, layero) {
+                    if (data.orderMaster.orderStatus == 1) {
+                        $.ajax({
+                            url: "/seller/order/alreadyOrder?orderId=" + data.orderMaster.orderId,
+                            success: function (data) {
+                                refreshOrderList();
+                                if (data.code == 0) {
+                                    layer.msg('接单成功');
+                                } else {
+                                    layer.msg('接单失败，未知原因');
+                                }
+                            }
+                        })
+                    } else if (data.orderMaster.orderStatus == 2) {
+                        $.ajax({
+                            url: "/seller/order/setDistribution?orderId=" + data.orderMaster.orderId,
+                            success: function (data) {
+                                refreshOrderList();
+                                if (data.code == 0) {
+                                    layer.msg('订单状态修改成功');
+                                } else {
+                                    layer.msg('订单状态修改失败，未知原因');
+                                }
+                            }
+                        })
+                    } else if (data.orderMaster.orderStatus == 6) {
+                        $.ajax({
+                            url: "/seller/order/setDistributionFinish?orderId=" + data.orderMaster.orderId,
+                            success: function (data) {
+                                refreshOrderList();
+                                if (data.code == 0) {
+                                    layer.msg('订单状态修改成功');
+                                } else {
+                                    layer.msg('订单状态修改失败，未知原因');
+                                }
+                            }
+                        })
+                    }
+                    layer.close(index);
+                },
+                btn2: function (index) {
+                    if (data.orderMaster.orderStatus == 1) {
+                        $.ajax({
+                            url: "/seller/order/cancel?orderId=" + data.orderMaster.orderId,
+                            success: function (data) {
+                                if (data.code == 0) {
+                                    refreshOrderList();
+                                    layer.msg('成功拒绝接单');
+                                } else {
+                                    refreshOrderList();
+                                    layer.msg('拒绝接单失败，未知原因');
+                                }
+                            }
+                        })
+                    }
+                    layer.close(index);
+                },
+                btn3: function (index) {
+                    refreshOrderList();
+                    layer.close(index);
+                }
+            });
+        });
+    }
+
+    //在线接单
+    var webSocket = new WebSocket('ws://localhost:80/websocket');
+    var audio = document.querySelector("#music");
+    webSocket.onopen = function () {
+        console.log("连接建立成功");
+    }
+    webSocket.onmessage = function (event) {
+        var data = JSON.parse(event.data);
+        var s = template("tpl-orderDetail", {
+            data
+        });
+        if (data.sellerId == document.querySelector("#hidden").value) {
+            // audio.play();
+            layui.use('layer', function () {
+                var layer = layui.layer;
+                layer.open({
+                    type: 1,
+                    shade: 0,
+                    title: "新订单",
+                    area: ['500px', ''],
+                    maxHeight: "700px",
+                    content: s,
+                    btn: ["接单", "拒绝接单", '关闭'],
+                    yes: function (index) {
+                        $.ajax({
+                            url: "/seller/order/alreadyOrder?orderId=" + data.orderMaster.orderId,
+                            success: function (data) {
+                                refreshOrderList();
+                                if (data.code == 0) {
+                                    layer.msg('接单成功');
+                                } else {
+                                    layer.msg('接单失败，未知原因');
+                                }
+                            }
+                        })
+                        audio.pause();
+                        layer.close(index);
+                    },
+                    btn2: function (index) {
+                        $.ajax({
+                            url: "/seller/order/cancel?orderId=" + data.orderMaster.orderId,
+                            success: function (data) {
+                                if (data.code == 0) {
+                                    refreshOrderList();
+                                    layer.msg('成功拒绝接单');
+                                } else {
+                                    refreshOrderList();
+                                    layer.msg('拒绝接单失败，未知原因');
+                                }
+                            }
+                        })
+                        audio.pause();
+                        layer.close(index);
+                    },
+                    btn3: function (index) {
+                        refreshOrderList();
+                        audio.pause();
+                        layer.close(index);
+                    }
+                })
+            })
+        }
+    }
+
+    //---------------------------------------------------------------------------------------------------类目管理
+    function renderClassList() {
+        $.ajax({
+            url: "/seller/cate/list",
+            success: function (data) {
+                var s = template("tpl-classList", {
+                    data
+                });
+                $("#classTbody").html("");
+                $("#classTbody").append($(s));
+            }
+        })
+    }
+    //删除商品类别
+    function changeClassName(e) {
+        var cateid = e.target.dataset.classid;
+        layui.use('layer', function () {
+            var layer = layui.layer;
+            layer.prompt({title: "输入新名称:"},
+                function (value, index, elem) {
+                    $.ajax({
+                        url: "/seller/cate/change?categoryId=" + cateid + "&newName=" + value,
+                        success: function (data) {
+                            if (data.code == 0) {
+                                layer.msg('修改成功');
+                                renderClassList();
+                            } else {
+                                layer.msg("失败，请稍后再试")
+                            }
+                        }
+                    })
+                    layer.close(index);
+                }
+            )
+        })
+    }
+    //类目删除
+    function deleteClass(e) {
+        var cateid = e.target.dataset.classid;
+        layui.use('layer', function () {
+            var layer = layui.layer;
+            layer.confirm('同时删除分类下所有商品，确认删除吗？', {icon: 3, title:'提示'}, function(index){
+                $.ajax({
+                    url:"/seller/cate/remove?cateId="+cateid,
+                    success:function (data) {
+                        if (data.code == 0){
+                            layer.msg('类目删除成功！');
+                            renderClassList();
+                        }else{
+                            layer.msg("失败，请稍后再试");
+                        }
+                    }
+                })
+                layer.close(index);
+            });
+        })
+    }
+    //新增类目
+    function addClass(e){
+        layui.use('layer', function () {
+            var layer = layui.layer;
+            layer.prompt({title: "输入新类目名称:"},
+                function (value, index, elem) {
+                    $.ajax({
+                        url: "/seller/cate/add?newName=" + value,
+                        success: function (data) {
+                            if (data.code == 0) {
+                                layer.msg('修改成功');
+                                renderClassList();
+                            } else {
+                                layer.msg("失败，请稍后再试")
+                            }
+                        }
+                    })
+                    layer.close(index);
+                }
+            )
+        })
+    }
+    //--------------------------------------------商品管理-------------------------------------------------------------
+    //渲染商品列表
+    function renderProductList(){
+        $.ajax({
+            url:"/seller/product/list",
+            success:(data)=>{
+                data = data.plist;
+                var s = template("tpl-productList", {
+                    data
+                });
+                $("#prductTbody").html("");
+                $("#prductTbody").append($(s));
+            }
+        })
+    }
+    //新增商品
+    function addProduct(e){
+        var data = {};
+        $.ajax({
+            url:"/seller/cate/list",
+            async:false,
+            success:function (res) {
+                data.cate = res;
+            }
+        })
+        var s = template("tpl-product", {
+            data
+        });
+        layui.use('layer', function() {
+            var layer = layui.layer;
+            layer.open({
+                content: s,
+                area: ['600px', '700px'],
+                btn: ['保存', '关闭'],
+                yes: function (index) {
+                    $.ajax({
+                        url:"/seller/product/addProduct",
+                        type:"POST",
+                        ContentType:"application/x-www-form-urlencoded",
+                        data:$("#productInfoForm").serialize(),
+                        success:(data)=>{
+                            renderProductList();
+                            layer.msg("保存成功");
+                        }
+                     })
+                    layer.close(index);
+                }
+            })
+        })
+        layui.use('upload', function(){
+            var upload = layui.upload;
+            //执行实例
+            var uploadInst = upload.render({
+                elem: '#upProductIcon' //绑定元素
+                ,url: '/seller/product/uploadIcon' //上传接口
+                ,done: function(res){
+                    $("#productIcon2").val(res.data);
+                    $("#productImg").attr("src",res.data);
+                    $("#pImgOut").show();
+                    //上传完毕回调
+                }
+                ,error: function(res){
+                    console.log(res);
+                    //请求异常回调
+                }
+            });
+        });
+        layui.use('form', function(){
+            var form = layui.form;
+            form.render();
+            // //监听提交
+            // form.on('submit(formDemo)', function(data){
+            //     layer.msg(JSON.stringify(data.field));
+            //     return false;
+            // });
+        });
+    }
+
+    //修改商品信息
+    function changeProduct(e){
+        var pid = e.target.dataset.productid;
+        $.ajax({
+            url:"/seller/product/oneProduct?productId="+pid,
+            success:function (data) {
+                data = data.data;
+                var s = template("tpl-product", {
+                    data
+                });
+                layui.use('layer', function(){
+                    var layer = layui.layer;
+                    layer.open({
+                        content:s,
+                        area: ['600px', '700px'],
+                        btn: ['确认修改', '删除', '关闭'],
+                        yes: function(index, layero){
+                            $.ajax({
+                                url:"/seller/product/changeProduct",
+                                type:"POST",
+                                ContentType:"application/x-www-form-urlencoded",
+                                data:$("#productInfoForm").serialize(),
+                                success:(data)=>{
+                                    renderProductList();
+                                    layer.msg("修改成功");
+                                }
+                            })
+                            layer.close(index);
+                        },
+                        btn2:function (index) {
+                            var pid = $("#productId").val();
+                            $.ajax({
+                                url:"/seller/product/remove?productId="+pid,
+                                success:function (data) {
+                                    renderProductList();
+                                    layer.msg("删除成功");
+                                }
+                            })
+                        }
+                    })
+                });
+                layui.use('form', function(){
+                    var form = layui.form;
+                    form.render();
+                    // //监听提交
+                    // form.on('submit(formDemo)', function(data){
+                    //     layer.msg(JSON.stringify(data.field));
+                    //     return false;
+                    // });
+                });
+                layui.use('upload', function(){
+                    var upload = layui.upload;
+                    //执行实例
+                    var uploadInst = upload.render({
+                        elem: '#upProductIcon' //绑定元素
+                        ,url: '/seller/product/uploadIcon' //上传接口
+                        ,done: function(res){
+                            $("#productIcon2").val(res.data);
+                            $("#productImg").attr("src",res.data);
+                            //上传完毕回调
+                        }
+                        ,error: function(res){
+                            console.log(res);
+                            //请求异常回调
+                        }
+                    });
+                });
+            }
+        })
+    }
+    //修改商品 上下架状态
+    function changeProductStatus(e){
+        var pid = e.target.dataset.productid;
+        $.ajax({
+            url:"/seller/product/changeStatus?productId="+pid,
+            success:function (data) {
+                layui.use('layer', function(){
+                    var layer = layui.layer;
+                    renderProductList();
+                    layer.msg("操作成功");
+                })
+            }
+        })
+    }
+
+
+    //--------------------------------------------------------------------------------------------------------tab页
+    //tab页切换
+    var preTab = "#orderContent";
+    function changeTab(e) {
+        switch (e.target.dataset.tabtype) {
+            //订单管理
+            case "1":
+                $(preTab).hide();
+                preTab = "#orderContent";
+                $("#orderContent").show();
+                break;
+            //类目管理
+            case "2":
+                $(preTab).hide();
+                preTab = "#classContent";
+                $("#classContent").show();
+                renderClassList();
+                break;
+            //商品管理
+            case "3":
+                $(preTab).hide();
+                preTab = "#productContent";
+                $("#productContent").show();
+                renderProductList();
+                break;
+            //评价管理
+            case "5":
+                $(preTab).hide();
+                preTab = "#commentContent";
+                $("#commentContent").show();
+                renderCommentList();
+                break;
+        }
+    }
+</script>
 </body>
 </html>

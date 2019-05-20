@@ -3,13 +3,12 @@ package com.xia.sell.service;
 import com.xia.sell.dto.ProductInfoDTO;
 import com.xia.sell.po.ProductCategory;
 import com.xia.sell.po.ProductInfo;
-import com.xia.sell.vo.SellerProductInfoVO;
 
 import java.util.List;
 
 public interface SellerProductService {
 
-	List<SellerProductInfoVO> productList(String sellerId);
+	Object productList(Integer page,String sellerId);
 
 	void changeStatus(String productId);
 

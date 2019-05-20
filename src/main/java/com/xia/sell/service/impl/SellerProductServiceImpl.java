@@ -17,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 @Service
 public class SellerProductServiceImpl implements SellerProductService {
@@ -25,12 +26,17 @@ public class SellerProductServiceImpl implements SellerProductService {
 	@Autowired
 	private ProductCategoryMapper categoryMapper;
 	@Override
-	public List<SellerProductInfoVO> productList(String sellerId) {
+	public Object productList(Integer page,String sellerId) {
+		//PageHelper.startPage(page, 6);
 		List<SellerProductInfoVO> sellerProductInfoVOS = productInfoMapper.selectSellerProductInfoVO(sellerId);
+		//PageInfo<SellerProductInfoVO> pages = new PageInfo<>(sellerProductInfoVOS);
 		for (SellerProductInfoVO vo : sellerProductInfoVOS) {
 			vo.setProductStatus(EnumUtil.getMessage(Byte.valueOf(vo.getProductStatus()), ProductStatusEnum.class));
 		}
-		return sellerProductInfoVOS;
+		HashMap<String, Object> map = new HashMap<>();
+		//map.put("page", pages);
+		map.put("plist", sellerProductInfoVOS);
+		return map;
 	}
 
 	@Override

@@ -1,15 +1,14 @@
 package com.xia.sell.service;
 
-import com.xia.sell.vo.OrderInfoVO;
-
 import java.util.HashMap;
+import java.util.Map;
 
 public interface SellerOrderService {
 	HashMap<String, Object> getAllOrder(Integer page, String sellerId);
 
 	void cancelOrder(String orderId);
 
-	OrderInfoVO findOne(String orderId);
+	Map<String,Object> findOne(String orderId);
 
 	void alreadyOrder(String orderId);
 

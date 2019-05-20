@@ -1,6 +1,7 @@
 package com.xia.sell.controller;
 
 import com.xia.sell.dto.LoginDTO;
+import com.xia.sell.po.SellerInfo;
 import com.xia.sell.service.SellerInfoService;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.apache.shiro.SecurityUtils;
@@ -57,8 +58,12 @@ public class SellerLoginController {
 		}
 		HttpSession session = request.getSession();
 		session.setAttribute("sellerId", loginDTO.getUsername());
-		String shopName = sellerInfoService.selectSellerInfoByUsername(loginDTO.getUsername()).getShopName();
+		SellerInfo sellerInfo = sellerInfoService.selectSellerInfoByUsername(loginDTO.getUsername());
+		String shopName = sellerInfo.getShopName();
+		String shopIcon = sellerInfo.getShopIcon();
 		session.setAttribute("shopName", shopName);
+		session.setAttribute("shopIcon", shopIcon);
+
 		//HashMap<String, String> map = new HashMap<>();
 		//map.put("code", "1");
 		//map.put("msg", "登陆成功");

@@ -12,7 +12,7 @@ public class MainController {
 	private InitRedis initRedis;
 	@GetMapping("/")
 	public String index(){
-		initRedis.init();
+		//initRedis.init();
 		return "redirect:/seller/order/list";
 	}
 	@GetMapping("/initRedis")

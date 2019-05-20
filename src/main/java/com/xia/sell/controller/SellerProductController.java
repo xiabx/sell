@@ -10,20 +10,18 @@ import com.xia.sell.service.SellerProductService;
 import com.xia.sell.util.KeyUtil;
 import com.xia.sell.util.ResultVOUtil;
 import com.xia.sell.vo.ResultVO;
-import com.xia.sell.vo.SellerProductInfoVO;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
@@ -37,12 +35,14 @@ public class SellerProductController {
 	@Autowired
 	private BosClient client;
 	@GetMapping("/list")
-	public String list(Model model,HttpServletRequest request){
+	@ResponseBody
+	public Object list(@RequestParam(value = "page",defaultValue = "1") Integer page,Model model, HttpServletRequest request){
 		HttpSession session = request.getSession();
 		String sellerId = (String) session.getAttribute("sellerId");
-		List<SellerProductInfoVO> sellerProductInfoVOS = sellerProductService.productList(sellerId);
-		model.addAttribute("sellerProductInfoVOS", sellerProductInfoVOS);
-		return "productList";
+		Object map = sellerProductService.productList(page,sellerId);
+		//model.addAttribute("sellerProductInfoVOS", map);
+
+		return map;
 	}
 	@GetMapping("/changeStatus")
 	@ResponseBody
@@ -98,13 +98,13 @@ public class SellerProductController {
 			}
 		try {
 			// 图片变化了
-			if (productInfoDTO.getProductIcon().getSize() != 0){
-				InputStream inputStream = productInfoDTO.getProductIcon().getInputStream();
-				String productIconKey = KeyUtil.getProductIconKey();
-				PutObjectResponse putObjectResponseFromInputStream = client.putObject("waimai1996", productIconKey, inputStream);
-				URL url = client.generatePresignedUrl("waimai1996",productIconKey, -1);
-				productInfoDTO.setProductIcon2(url.toString());
-			}
+			//if (productInfoDTO.getProductIcon().getSize() != 0){
+			//	InputStream inputStream = productInfoDTO.getProductIcon().getInputStream();
+			//	String productIconKey = KeyUtil.getProductIconKey();
+			//	PutObjectResponse putObjectResponseFromInputStream = client.putObject("waimai1996", productIconKey, inputStream);
+			//	URL url = client.generatePresignedUrl("waimai1996",productIconKey, -1);
+			//	productInfoDTO.setProductIcon2(url.toString());
+			//}
 			sellerProductService.changeProduct(productInfoDTO);
 			return ResultVOUtil.success();
 		}catch (Exception e){
@@ -123,13 +123,7 @@ public class SellerProductController {
 		try {
 			HttpSession session = request.getSession();
 			String sellerId = (String) session.getAttribute("sellerId");
-			if (productInfoDTO.getProductIcon().getSize() != 0){
-				InputStream inputStream = productInfoDTO.getProductIcon().getInputStream();
-				String productIconKey = KeyUtil.getProductIconKey();
-				PutObjectResponse putObjectResponseFromInputStream = client.putObject("waimai1996", productIconKey, inputStream);
-				URL url = client.generatePresignedUrl("waimai1996",productIconKey, -1);
-				productInfoDTO.setProductIcon2(url.toString());
-			}else {
+			if (productInfoDTO.getProductIcon2() == null || productInfoDTO.getProductIcon2() == "") {
 				//设置默认图片
 				productInfoDTO.setProductIcon2("http://waimai1996.bj.bcebos.com/sorry.png?authorization=bce-auth-v1/0b8f90ee057342ce960257df33e0ec7b/2018-10-11T06:29:21Z/-1/host/f5f83ec3ab80fa877f4eeb6c5b11789f265f50e496530258fdcd9c710bc50fdb");
 			}
@@ -139,5 +133,18 @@ public class SellerProductController {
 			e.printStackTrace();
 			return ResultVOUtil.error(1, "未知错误，请稍后再试");
 		}
+	}
+	@PostMapping("/uploadIcon")
+	@ResponseBody
+	public Object uploadImg(@RequestParam("file") MultipartFile icon) throws IOException {
+		InputStream inputStream = icon.getInputStream();
+		String iconKey = KeyUtil.getProductIconKey();
+		PutObjectResponse putObjectResponseFromInputStream = client.putObject("waimai1996", iconKey, inputStream);
+		URL url = client.generatePresignedUrl("waimai1996",iconKey, -1);
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("code", 0);
+		map.put("msg", "");
+		map.put("data", url.toString());
+		return map;
 	}
 }

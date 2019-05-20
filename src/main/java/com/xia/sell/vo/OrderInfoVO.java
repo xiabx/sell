@@ -19,6 +19,7 @@ public class OrderInfoVO {
 	private String buyerOpenid;
 	private BigDecimal orderAmount;
 	private byte orderStatus;
+	private String orderStatusStr;
 	private byte payStatus;
 
 	private String createTime;

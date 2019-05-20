@@ -14,6 +14,7 @@ import com.xia.sell.exception.SellException;
 import com.xia.sell.po.OrderDetail;
 import com.xia.sell.po.OrderMaster;
 import com.xia.sell.service.SellerOrderService;
+import com.xia.sell.util.EnumUtil;
 import com.xia.sell.vo.OrderDetailInfoVO;
 import com.xia.sell.vo.OrderInfoVO;
 import com.xia.sell.vo.SellerOrderVO;
@@ -24,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 @Service
 public class SellerOrderServiceImpl implements SellerOrderService {
 	@Autowired
@@ -51,6 +54,7 @@ public class SellerOrderServiceImpl implements SellerOrderService {
 		map.put("nextPage", vosPage.getNextPage());
 		map.put("pages", vosPage.getPages());
 		map.put("pageNum", vosPage.getPageNum());
+		map.put("total", vosPage.getTotal());
 		return map;
 	}
 
@@ -71,7 +75,7 @@ public class SellerOrderServiceImpl implements SellerOrderService {
 	}
 
 	@Override
-	public OrderInfoVO findOne(String orderId) {
+	public Map findOne(String orderId) {
 		//查询订单
 		OrderMaster orderMaster=orderMasterMapper.selectByOrderId(orderId);
 		if (orderMaster == null){
@@ -88,7 +92,12 @@ public class SellerOrderServiceImpl implements SellerOrderService {
 			orderDetailInfoVOS.add(OrderDetail2OrderDetailInfoVO.toConverter(orderDetail));
 		}
 		orderInfoVO.setItems(orderDetailInfoVOS);
-		return orderInfoVO;
+		HashMap<String, Object> orderDetail = new HashMap<>();
+		orderDetail.put("orderMaster", orderMaster);
+		orderDetail.put("orderDetails", orderDetails);
+		String status = EnumUtil.getMessage(orderMaster.getOrderStatus(), OrderStatusEnum.class);
+		orderDetail.put("status", status);
+		return orderDetail;
 	}
 
 	@Override

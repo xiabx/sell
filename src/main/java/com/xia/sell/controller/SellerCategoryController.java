@@ -21,12 +21,13 @@ public class SellerCategoryController {
 	@Autowired
 	private SellerCategoryService categoryService;
 	@GetMapping("/list")
-	public String list(HttpServletRequest request, Model model){
+	@ResponseBody
+	public Object list(HttpServletRequest request, Model model){
 		HttpSession session = request.getSession();
 		String sellerId = (String) session.getAttribute("sellerId");
 		List<ProductCategory> list = categoryService.list(sellerId);
 		model.addAttribute("list", list);
-		return "category";
+		return list;
 	}
 	@GetMapping("/change")
 	@ResponseBody

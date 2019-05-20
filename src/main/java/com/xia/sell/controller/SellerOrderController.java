@@ -4,7 +4,6 @@ import com.xia.sell.exception.SellException;
 import com.xia.sell.service.OrderService;
 import com.xia.sell.service.SellerOrderService;
 import com.xia.sell.util.ResultVOUtil;
-import com.xia.sell.vo.OrderInfoVO;
 import com.xia.sell.vo.ResultVO;
 import com.xia.sell.vo.SellerOrderVO;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/seller/order")
@@ -46,6 +46,19 @@ public class SellerOrderController {
 		model.addAttribute("pageInfo", allOrder);
 		return "index";
 	}
+	@GetMapping("/listPage")
+	@ResponseBody
+	public Object orderListForPage(@RequestParam(value = "page",defaultValue = "1") Integer page, Model model, HttpServletRequest request){
+		HttpSession session = request.getSession();
+		String sellerId = (String) session.getAttribute("sellerId");
+
+		HashMap<String, Object> allOrder = sellerOrderService.getAllOrder(page, sellerId);
+
+		//List<SellerOrderVO> list = (List<SellerOrderVO>) allOrder.get("list");
+
+		return allOrder;
+	}
+
 	@GetMapping("/cancel")
 	@ResponseBody
 	public ResultVO cancel(String orderId){
@@ -93,8 +106,9 @@ public class SellerOrderController {
 	}
 	@GetMapping("/details")
 	@ResponseBody
-	public OrderInfoVO details(String  orderId){
-		OrderInfoVO orderInfoVO = sellerOrderService.findOne(orderId);
-		return orderInfoVO;
+	public Map<String, Object> details(String  orderId){
+		Map<String, Object> one = sellerOrderService.findOne(orderId);
+		//orderInfoVO.setOrderStatusStr();
+		return one;
 	}
 }

@@ -270,7 +270,30 @@ public class OrderServiceImpl implements OrderService {
 		map.put("sellerId", orderMaster1.getSellerId());
 		map.put("newOrderList", newOrderVOS);
 		map.put("amount", orderMaster1.getOrderAmount());
+
+		//查询订单
+		OrderMaster orderMaster11=orderMasterMapper.selectByOrderId(orderId);
+		if (orderMaster == null){
+			throw new SellException(ResultEnum.ORDER_NOT_EXIST);
+		}
+		//根据订单号。查询购买的商品
+		List<OrderDetail> orderDetails1 = orderDetailMapper.selectDetailByOrderId(orderMaster11.getOrderId());
+		if (orderDetails == null){
+			throw new SellException(ResultEnum.ORDERDETAIL_NOT_EXIST);
+		}
+		OrderInfoVO orderInfoVO = OrderMaster2OrderInfoVO.toConverter(orderMaster11);
+		ArrayList<OrderDetailInfoVO> orderDetailInfoVOS = new ArrayList<>();
+		for (OrderDetail orderDetail : orderDetails1) {
+			orderDetailInfoVOS.add(OrderDetail2OrderDetailInfoVO.toConverter(orderDetail));
+		}
+		orderInfoVO.setItems(orderDetailInfoVOS);
+		map.put("orderMaster", orderMaster11);
+		map.put("orderDetails", orderDetails1);
+		String status = EnumUtil.getMessage(orderMaster.getOrderStatus(), OrderStatusEnum.class);
+		map.put("status", status);
 		return map;
+
+
 	}
 
 	@Override
