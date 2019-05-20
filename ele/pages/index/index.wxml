@@ -1,0 +1,6 @@
+<!--index.wxml-->
+<view class="container">
+  <button type='default' bindtap='toLogin'>登陆</button>
+  <button type='default' bindtap='checkSession'>checkSession</button>
+  <button open-type="getUserInfo">getUserInfo</button> 
+</view>

@@ -1,0 +1,63 @@
+<!--pages/order/order.wxml-->
+<view class='out'>
+  <view class='address'>
+    <text style='font-size:30rpx'>订单配送至</text>
+    <text style='font-size:38rpx;line-height:96rpx;' bindtap='chooseAddress' wx:if="{{!noAddress}}">{{location}}{{detail}}  ></text>
+    <text style='font-size:34rpx' wx:if="{{!noAddress}}">{{buyerName}} {{buyerPhone}}</text>
+     <text style='font-size:50rpx;line-height:96rpx;' bindtap='chooseAddress' wx:if="{{noAddress}}">添加新地址  ></text>
+  </view>
+  <!-- <view class='timePay'>
+    <view class='in'>
+      <view>送达时间</view>
+      <view style='font-weight:600;color:#FFD161'>尽快送达</view>
+    </view>
+    <view class='in'>
+      <view>支付方式</view>
+      <view style='font-weight:600;color:#FFD161'>在线支付</view>
+    </view>
+  </view> -->
+
+  <view class='order'>
+    <view class='orderHead'>{{other.shopName}}</view>
+
+    <block wx:for="{{cart}}" wx:key="{{index}}">
+      <view class='orderItem'>
+        <image src='{{item.foodIcon}}' style='height:86rpx;width:86rpx;padding-top:15rpx;' mode='aspectFill'></image>
+        <view style='width:180rpx;font-size:30rpx;text-align:center'>{{item.foodName}}</view>
+        <view style='width:80rpx;font-size:30rpx;text-align:center'>x{{item.num}}</view>
+        <view style='width:180rpx;font-size:30rpx;text-align:center'>￥{{item.amountPrice}}</view>
+      </view>
+      </block>
+
+        <view class='orderItem'>
+          <view>优惠</view>
+          <view style='color:red;'>-￥{{other.discount}}</view>
+        </view>
+        <view class='orderItem'>
+          <view>配送费</view>
+          <view style='color:red;'>+￥{{other.distributionFee}}</view>
+        </view>
+
+        <view class='orderItem'>
+          <view>小计</view>
+          <view style='font-size:60rpx;'>￥{{other.amount}}</view>
+        </view>
+        <view style='height:100rpx;'>
+        </view>
+  </view>
+  <view class='timePay' style='height:100rpx;'>
+    <view class='in' bindtap='toNote'>
+      <view>订单备注</view>
+      <view style='font-size:26rpx;color:#666;width:440rpx;text-align:right' wx:if="{{note.length == 0}}">口味、偏好 ></view>
+       <view style='font-size:26rpx;color:#666;width:440rpx;text-align:right;overflow:hidden;text-overflow:clip' wx:if="{{note.length != 0}}">{{note}}</view>
+    </view>
+  </view>
+  <view style='height:200rpx;width100%'></view>
+</view>
+<view class='bottom'>
+  <view class='amount'>￥{{other.amount}}
+    <view style='height:80rpx;width:160rpx;border-left:2rpx solid #999999;margin-top:10rpx;postive:realtive;left:20rpx;margin-left:10rpx;font-size:28rpx;padding-left:10rpx;line-height:80rpx;color:#999999;'> 已优惠 ￥{{other.discount}}</view>
+  </view>
+
+  <view class='go' bindtap='toPay'>去支付</view>
+</view>

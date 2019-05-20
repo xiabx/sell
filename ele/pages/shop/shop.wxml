@@ -1,0 +1,67 @@
+<!--pages/shop/shop.wxml-->
+
+<view class='head'>
+    <view class='location' bindtap='toAddress'>
+      <view style='width:56rpx;height:56rpx;'><image style='width:56rpx;height:56rpx;' src='/images/location.png'></image></view>
+      <view style='height:60rpx;line-height:52rpx;margin-left:4rpx;overflow:hidden;;text-overflow: ellipsis;margin-right:6rpx;max-width:400rpx;overflow:hidden;'><text  style='font-size:32rpx;text-overflow: ellipsis;color:#666;'>{{location}}</text></view>
+    </view>
+    <!-- <view class='search'>
+        <view style='line-height:20rpx;height:60rpx;padding-left:10rpx;'><image src='/images/search.png' style='height:56rpx;width:56rpx;'></image></view> 
+        <view style='line-height:58rpx;padding-left:10rpx;'><text>搜索</text></view>     
+    </view> -->
+</view>
+
+<view wx:if="{{!noShop}}">
+  <view>
+    <view class='category'>
+      <block wx:for="{{category1}}" wx:key="{{index}}">
+          <view class='category-item' bindtap='toCategory' data-categorytype='{{item.categoryType}}' data-categoryname='{{item.text}}'>
+            <image src='{{item.image}}' class='item-image'></image>
+            <text class='item-text'>{{item.text}}</text>
+          </view>
+        </block>
+    </view>
+    <view class='category'>
+      <block wx:for="{{category2}}" wx:key="{{index}}">
+          <view class='category-item' bindtap='toCategory' data-categorytype='{{item.categoryType}}' data-categoryname='{{item.text}}'>
+            <image src='{{item.image}}' class='item-image'></image>
+            <text class='item-text'>{{item.text}}</text>
+          </view>
+        </block>
+    </view>
+  </view>
+  <view style='height:60rpx;width:100%;'></view>
+  <view class='head_1'>
+    <view class="{{flag == 1  ? 'sortSelect':'sort'}}" bindtap='changeSort' data-flag='1'>综合排序</view>
+    <view class="{{flag == 2  ? 'sortSelect':'sort'}}" bindtap='changeSort' data-flag='2'>销量最高</view>
+    <view class="{{flag == 3  ? 'sortSelect':'sort'}}" bindtap='changeSort' data-flag='3'>离我最近</view>
+  </view>
+  <view class='shop-item-out'>
+    <block wx:for="{{shops}}" wx:key="{{index}}">
+      <view class='shop-item' bindtap='toGoods' data-id='{{item.id}}' >
+        <image src='{{item.shopIcon}}' class='shop-item-image' mode='aspectFill'></image>
+        <view class='shop-item-content'>
+          <text style=''>{{item.shopName}}</text>
+          <view><text style='font-size:12px'>销量:{{item.shopSold}}</text></view>
+          <view class='shop-item-content-in'>
+            <view><text style='font-size:17px'>起送：￥{{item.beginFee}}</text></view>
+            <view style='margin-right:20rpx;'><text style='font-size:17px'>距离：{{item.distance}}m</text></view>
+          </view>
+        </view>
+      </view>
+    <view style='height:2px;width:100%;border-bottom: 1px solid #E5E5E5;'></view>
+    </block>
+  </view>
+
+  <view style='height:50rpx;width:100%;text-align:center'>
+      <view style='font-size:22rpx;color:#3F3F3F;line-height:50rpx;'>更多商家接入中</view>
+  </view>
+
+
+</view>
+
+<view wx:if="{{noShop}}" class='noShop_out'>
+  <view style='height:300rpx;width:316rpx;margin-top:100rpx;'><image  style='height:300rpx;width:300rpx;' src='/images/no.png'></image></view>
+  <view style='color:#7E8B97; font-size:50rpx;margin-top:20rpx;'>附近没有发现门店</view>
+  <view class='noShop_change' bindtap='toAddress'>切换地址</view>
+</view>

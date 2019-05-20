@@ -1,0 +1,29 @@
+<!--pages/shopCategory/shopCategory.wxml-->
+<view wx:if="{{!block}}" >
+<view class='head'>
+  <view class="{{flag == 1  ? 'sortSelect':'sort'}}" bindtap='changeSort' data-flag='1'>综合排序</view>
+  <view class="{{flag == 2  ? 'sortSelect':'sort'}}" bindtap='changeSort' data-flag='2'>销量最高</view>
+  <view class="{{flag == 3  ? 'sortSelect':'sort'}}" bindtap='changeSort' data-flag='3'>离我最近</view>
+</view>
+
+
+<view class='shopOut'>
+<block wx:for="{{shopList}}" wx:key="{{index}}">
+   <view class='shop-item' bindtap='toGoods' data-id='{{item.id}}' bindtap='toProducts' data-id='{{item.id}}' >
+      <image src='{{item.shopIcon}}' class='shop-item-image' mode='aspectFill'></image>
+      <view class='shop-item-content'>
+        <text style=''>{{item.shopName}}</text>
+        <view><text style='font-size:12px'>月售{{item.shopSold}}</text></view>
+        <view class='shop-item-content-in'>
+          <view><text style='font-size:17px'>起送：￥{{item.beginFee}}</text></view>
+          <view style='margin-right:20rpx;'><text style='font-size:17px'>距离：{{item.distance}}m</text></view>
+        </view>
+      </view>
+    </view>
+  <view style='height:2px;width:100%;border-bottom: 1px solid #E5E5E5;'></view>
+</block>
+</view>
+</view>
+<view class='block' wx:if="{{block}}">
+  该分类下暂无商家
+</view>

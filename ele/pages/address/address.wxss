@@ -1,0 +1,14 @@
+/* pages/address/address.wxss */
+.formView{
+  display: flex;
+  flex-direction: row;
+  margin-top: 18rpx;
+}
+.scrollyOut{
+  height: 1100rpx;
+  width: 100%;
+}
+/* .addressOut{
+  height: 80rpx;
+  width: 100%;
+} */

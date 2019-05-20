@@ -1,0 +1,5 @@
+<!--pages/auth/auth.wxml-->
+  <view class='s1'>step 1:</view>
+ <button open-type='openSetting' type='primary' bindopensetting="locationAuth" class='authButton'  disabled="{{noshowlocationbutton}}" >授予位置权限</button>
+  <view class='s2'>step 2:</view>
+ <button open-type="getUserInfo" type='primary' class='checkUserButton' bindgetuserinfo="checkUserInfo">绑定微信</button> 

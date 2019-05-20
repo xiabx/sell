@@ -1,0 +1,71 @@
+/* pages/my/my.wxss */
+.head{
+  background-color: #FED06A;
+  height: 216rpx;
+  width: 100%;
+  overflow-x: hidden;
+}
+.touxiang{
+  width: 160rpx;
+  height: 160rpx;
+  border: 0 solid #FED06A;
+  border-radius: 100rpx;
+  background-color: #FED06A;
+}
+.touxiang_out{
+  position: relative;
+  top: 20rpx;
+  left: 20rpx;
+}
+.name_out{
+  position: absolute;
+  left: 213rpx;
+  top: 64rpx;
+}
+.name{
+  font-size: 44rpx;
+  font-weight: 500
+}
+page{
+  background-color: #F4F4F4;
+}
+.item_out{
+  background: white;
+  /* width: 100%; */
+  /* overflow-x: hidden; */
+}
+.item{
+  height: 80rpx;
+  width: 100%;
+  border-bottom: 1px solid #F4F4F4;
+}
+.address{
+  width:51rpx;
+  height: 50rpx; 
+}
+.address_out{
+  display: inline-block;
+  /* margin-left: 21rpx;
+  margin-top: 21rpx; */
+  position: relative;
+  top: 16rpx;
+  right: -14rpx;
+}
+.text_out{
+  /* margin-left: 30rpx; */
+  display: inline-block;
+  height: 80rpx;
+  position: relative;
+  top: 7rpx;
+  right: -31rpx;
+}
+.addressText{
+  color: #666;
+}
+
+.userInfoButton{
+  width: 255rpx;
+  margin: 0 auto;
+  position: relative;
+  top: 47rpx;
+}

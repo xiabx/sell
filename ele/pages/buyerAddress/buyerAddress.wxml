@@ -1,0 +1,16 @@
+<!--pages/buyerAddress/buyerAddress.wxml-->
+<block wx:for="{{list}}" wx:key="{{index}}">
+  <view class='out' >
+    <view style='display: inline-block;width:400rpx;' bindtap='returnOrder' data-index='{{index}}'>
+      <view class='in1'><text class='title'>{{item.location}}{{item.detail}}</text></view>
+      <view class='in2'><text class='name'>{{item.buyerName}} {{item.buyerPhone}}</text></view>
+    </view>
+    <view class='in3' bindtap='edit' data-index='{{index}}'><image src='/images/edit.png' class='edit'></image></view>
+  </view>
+</block>
+
+
+<view class='bottom' bindtap='addAddress'>
+    <image src='/images/add.png' class='bottom_image'></image>
+    <text class='bottom_text'>新增收货地址</text>
+</view>

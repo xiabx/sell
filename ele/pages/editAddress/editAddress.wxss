@@ -1,0 +1,27 @@
+/* pages/editAddress/editAddress.wxss */
+.out{
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1rpx solid #F4F4F4;
+  height: 76rpx;
+  width: 100%;
+  line-height: 76rpx;
+}
+.in1{
+  margin-left: 25rpx;
+  width: 160rpx;
+}
+.in2{
+  width: 400rpx;
+  position: relative;
+  top: 16rpx;
+  display: flex;
+  flex-direction: row;
+}
+.image{
+  display: inline-block;
+  position: relative;
+  width: 500rpx;
+  overflow: hidden;
+  top: -13rpx;
+}

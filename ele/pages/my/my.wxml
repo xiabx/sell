@@ -1,0 +1,20 @@
+<!--pages/my/my.wxml-->
+<view class='head' >
+    <view class='touxiang_out'><image class='touxiang' src='{{userIcon}}'></image></view>
+    <view class='name_out'><text class='name'>{{userName}}</text></view>
+     <!-- <view class='name_out'><text class='name'>xiabaoxinnihaoshuai</text></view> -->
+</view>
+<view style='height:20rpx;'></view>
+
+<view class='item_out'>
+  <view class='item' bindtap='chooseAddress'>
+    <view class='address_out'><image src='/images/newAddress.png'class='address'></image></view>
+    <view class='text_out' ><text class='addressText'>我的地址</text></view>
+  </view>
+</view>
+<view class='item_out' style='margin-top:6rpx;'>
+  <view class='item' bindtap='question'>
+    <view class='address_out'><image src='/images/qustion.png'class='address'></image></view>
+    <view class='text_out' ><text class='addressText'>常见问题</text></view>
+  </view>
+</view>

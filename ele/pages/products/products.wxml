@@ -1,0 +1,169 @@
+<!--pages/meitaun/meituan.wxml-->
+<view class='head'>
+  <view class='logoView'>
+    <image src='{{info.shopIcon}}' mode="aspectFill"></image>
+  </view>
+  <view class='shop-info'>
+    <view><text>起送 ￥{{info.beginFee}}</text></view>
+    <view><text>公告：祝您用餐愉快。</text></view>
+    <swiper style='height:44rpx;width:350rpx;' autoplay='{{true}}' vertical='{{true}}' interval='5000' duration='500' circular='{{true}}'>
+      <!-- <swiper-item><text>新用户首单立减15元</text></swiper-item> -->
+      <swiper-item><text>{{fullReduceInfo}}</text></swiper-item>
+      <swiper-item><text>满50送精美礼品一份</text></swiper-item>
+    </swiper>
+  </view>
+</view>
+<view class='tab' >
+  <view class='iNtab' bindtap='changeTab' data-type='1'><text class="{{showTab == 1 ? 'show' : 'hidden'}}">点餐</text></view>
+  <view class='iNtab' bindtap='changeTab' data-type='2'><text class="{{showTab == 2 ? 'show' : 'hidden'}}">评论</text></view>
+  <view class='iNtab' bindtap='changeTab' data-type='3'><text class="{{showTab == 3 ? 'show' : 'hidden'}}">商家</text></view>
+</view>
+
+<!-- 商品选择 -->
+<view wx:if="{{showTab==1}}">
+<view class='goods'>
+
+ <scroll-view style="height:870rpx;width:170rpx;background-color:#F7F7F7" scroll-y >
+  <block wx:for="{{list.data}}" wx:key="{{index}}">
+    <view class="{{index == typeindex ? 'currentType' : 'classification'}}"bindtap='toClassification' data-typeindex='{{index}}'>{{item.name}}</view>   
+  </block> 
+ </scroll-view>
+<!--width:600rpx;  -->
+<view style="height:894rpx;">
+ <view class='classificationName'><view></view>{{showView.name}}</view>
+ <!-- width:600rpx; -->
+ <scroll-view style="height:808rpx;" scroll-y>
+  <block wx:for="{{showView.foods}}" wx:key="{{index}}">
+    <view class='food'>
+      <image src='{{item.icon}}' mode='aspectFill' class='foodImage'></image>
+       <view class='foodInfo'>
+          <view class='foodInfoItem'><text class='foodTitle'>{{item.name}}</text></view> 
+          <view class='foodInfoItem2'><text class='foodContent'>{{item.description}}</text></view>
+          <text class='foodSold'>销量:{{item.sold}}</text>
+          <view class='priceAdd'>
+            <view class='price'>
+              <text class='foodPrice'>￥{{item.price}}</text>
+            </view>
+            <view class='msg'>
+              <image src='../../images/sub.png' class='sub' bindtap='subFood' data-food-id='{{item.id}}' wx:if="{{item.inCart}}"></image>
+              <view wx:if="{{item.inCart}}" style='width:56rpx;text-align:center'>{{item.cartCount}}</view>
+              <image src='../../images/add.png' class='add' bindtap='addFood' data-food-id='{{item.id}}' data-food-type=''></image>
+            </view>
+          </view>
+      </view>
+    </view>
+  </block>
+ </scroll-view>
+ </view>
+</view>
+
+<view class='buttom' style='z-index:99;'>
+  <view class='cartView'>
+    <image src='../../images/cart-icon.png' class='cart' wx:if="{{cart[0]==null}}"></image>
+    <image src='../../images/cart-icon-active.png' class='cart' wx:if="{{cart[0]!=null}}" bindtap='showCart'></image>
+    <text class="cart-num" wx:if="{{cartNum>0}}">{{cartNum}}</text>
+  </view> 
+  <view class='empty'></view>
+  <view class='amount'>
+    <view class='amount1' wx:if="{{cart[0]==null}}">另需配送费{{info.distributionFee}}元</view>
+    <view class='amount2' wx:if="{{cart[0]!=null}}">
+      <text class='bigAmount'>￥{{showAmount}} <text wx:if="{{haveDiscount}}">(已优惠{{currentDiscount.reduce}}元)</text></text>
+      <text class='smallAmount'>另需配送费{{info.distributionFee}}元</text>
+    </view>
+  </view>
+
+   <view class='toPay0' wx:if="{{amount<info.beginFee}}">
+    <text wx:if="{{amount<info.beginFee}}">{{info.beginFee}}元起送</text>
+  </view>
+  <view class='toPay' wx:if="{{amount>=info.beginFee}}" catchtap='createOrder'>
+    <text wx:if="{{amount>=info.beginFee}}">去结算</text>
+  </view>
+</view>
+
+<view class='maskView' wx:if="{{showCart}}" bindtap='showCart'></view>
+
+<view class='cartInfo' wx:if="{{showCart}}">
+  <view class='cartHead'>
+    <view bindtap='cleanCart'>
+      <image src='../../images/trash-can.png'></image>
+      <text>清空购物车</text>
+      <view style='width:40rpx;'></view>
+    </view>
+  </view>
+
+  <scroll-view style='max-height:420rpx;' scroll-y>
+    <block wx:for="{{cart}}" wx:key="{{index}}">
+      <view class='cartItem'>
+        <view class='cartItemName'>
+          {{item.foodName}}
+        </view>
+        <view class='cartItemOp'>
+          <image src='../../images/sub.png' class='item_sub' bindtap='subFood' data-food-id='{{item.foodId}}'></image>
+          <view class='item_text'>{{item.num}}</view>
+          <image src='../../images/add.png' class='item_add'  bindtap='addFood' data-food-id='{{item.foodId}}' ></image>
+        </view>
+      </view>
+    </block>
+    </scroll-view>
+</view>
+</view>
+
+<!-- 评论 -->
+<view wx:if="{{showTab == 2}}">
+<view wx:if="{{!noComment}}" style='width:100%;height:970rpx'>
+  <view>
+    <scroll-view scroll-y style='width:100%;height:970rpx' lower-threshold="50" bindscrolltolower="scrolltolower">
+    <block wx:for="{{comments}}" wx:key="{{index}}">
+      <view class='commentOut'>
+        <view class='coin1'>
+          <image src='{{item.buyerIcon}}' class='inicon'></image>
+          <view class='in2'>
+            <text style='color:#383838;font-size:40rpx;font-weight:500;width:360rpx;'>{{item.buyerName}}</text>
+            <view>
+              <image src='/images/star1.png' wx:if="{{item.star >= 1}}" class='star'></image>
+              <image src='/images/star1.png' wx:if="{{item.star >= 2}}" class='star'></image>
+              <image src='/images/star1.png' wx:if="{{item.star >= 3}}" class='star'></image>
+              <image src='/images/star1.png' wx:if="{{item.star >= 4}}" class='star'></image>
+              <image src='/images/star1.png' wx:if="{{item.star >= 5}}" class='star'></image>
+
+              <image src='/images/star2.png' wx:if="{{item.star < 1}}" class='star'></image>
+              <image src='/images/star2.png' wx:if="{{item.star < 2}}" class='star'></image>
+              <image src='/images/star2.png' wx:if="{{item.star < 3}}" class='star'></image>
+              <image src='/images/star2.png' wx:if="{{item.star < 4}}" class='star'></image>
+              <image src='/images/star2.png' wx:if="{{item.star < 5}}" class='star'></image>
+            </view>
+          </view>
+          <text style='' class='commentTime'>{{item.createTime}}</text>
+        </view>
+        <view class='commentContent'>
+          <view class='cin1'>
+            <text class='cin11'>{{item.content}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+    <view class='commentBottom' wx:if="{{commentIsLastPage}}">我是底线0.0</view>
+    </scroll-view>
+  </view>
+</view>
+
+<view wx:if="{{noComment}}" style='width:100%;height:840rpx;background-color:#FFFFFF;text-align:center;'>
+  <view style='margin-top:64rpx;'><image src='/images/noComment.png' style='width:304rpx;height:262rpx;'></image></view>
+  <view style='color:#E7E7E7'>暂无评论</view>
+</view>
+
+</view>
+<!-- 商家信息 -->
+<view wx:if="{{showTab == 3}}">
+  <view class='shopInfo'>
+    <view class='address'>
+      <view style='width:60rpx;display: inline-block;'><image src="/images/address.png" class='addressImage'></image></view> 
+      <view class='addressText'>{{location}}</view>
+    </view>
+    <view class='fullr'>
+      <view style='width:60rpx;display: inline-block;'> <image src="/images/fullr.png" class='fullrImage'></image></view>
+      <view class='fullrText'>{{fullReduceInfo}}</view>
+    </view>
+  </view>
+  
+</view>

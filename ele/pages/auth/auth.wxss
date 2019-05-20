@@ -1,0 +1,23 @@
+/* pages/auth/auth.wxss */
+.authButton{
+  margin: 0 auto;
+  width: 540rpx;
+  position: relative;
+  top: 200rpx;
+}
+.checkUserButton{
+  margin: 0 auto;
+  width: 540rpx;
+  position: relative;
+  top: 342rpx;
+}
+.s1{
+  position: relative;
+  top: 181rpx;
+  left: 102rpx;
+}
+.s2{
+  position: relative;
+  top: 309rpx;
+  left:102rpx;
+}

@@ -1,0 +1,90 @@
+/* pages/order/order.wxss */
+.out{
+  width: 100%;
+  height: 100%;
+  background-color: #FFD161;
+}
+.address{
+  width: 100%;
+  height: 214rpx;
+  display: flex;
+  flex-direction: column;
+  padding-top: 40rpx;
+  padding-left: 40rpx;
+}
+.address text{
+  color: white;
+}
+.timePay{
+  width: 90%;
+  height: 200rpx;
+  margin: 0 auto;
+  margin-top: 40rpx;
+  background-color: white;
+}
+.in{
+  height: 90rpx;
+  margin: 0 auto;
+  width: 90%;
+  border-bottom:2rpx solid #f0f0f0;
+  line-height: 90rpx;
+  font-size: 35rpx;
+  font-weight: 500;
+  display: flex;
+  flex-direction: row;
+  color: #666;
+  justify-content: space-between;
+}
+.order{
+  width: 90%;
+  /* height: 800rpx; */
+  margin: 0 auto;
+  margin-top: 11rpx;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+}
+.orderItem{
+  display: flex;
+  width: 90%;
+  margin: 0 auto;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 115rpx;
+  line-height: 115rpx;
+  border-bottom:2rpx solid #f0f0f0;
+}
+.orderHead{
+  height:100rpx;
+  line-height: 100rpx;
+  margin: 0 auto;
+  width: 90%;
+  border-bottom:2rpx solid #f0f0f0;
+  font-weight: 600;
+  color: #666;
+}
+.bottom{
+  height: 100rpx;
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  background-color: #3C3C3C;
+  line-height: 100rpx;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.amount{
+  margin-left: 7rpx;
+  color: white;
+  font-size: 23px;
+  display: flex;
+  flex-direction: row;
+}
+.go{
+  color: white;
+  display: inline-block;
+  width: 200rpx;
+  background-color: #00E067;
+  text-align: center;
+}

@@ -1,0 +1,32 @@
+<!--pages/comment/comment.wxml-->
+<!--星星评价-->
+<view class="container">
+  <view class="comment1-description">
+    <view class="star-pos" style="display:flex;flex-direction:row;">
+      <view class="stars " wx:if="{{flag>=1}}" bindtap="changeColor1"><image src='/images/star1.png' style='width:50rpx;height:50rpx'></image></view>
+      <view class="stars " wx:if="{{flag>=2}}" bindtap="changeColor2"><image src='/images/star1.png' style='width:50rpx;height:50rpx'></image></view>
+      <view class="stars " wx:if="{{flag>=3}}" bindtap="changeColor3"><image src='/images/star1.png' style='width:50rpx;height:50rpx'></image></view>
+      <view class="stars " wx:if="{{flag>=4}}" bindtap="changeColor4"><image src='/images/star1.png' style='width:50rpx;height:50rpx'></image></view>
+      <view class="stars " wx:if="{{flag>=5}}" bindtap="changeColor5"><image src='/images/star1.png' style='width:50rpx;height:50rpx'></image></view>
+
+      <view class="stars  {{flag>=1? 'on': ''}}" wx:if="{{flag<1}}" bindtap="changeColor1"><image src='/images/star2.png' style='width:50rpx;height:50rpx'></image></view>
+      <view class="stars  {{flag>=2? 'on': ''}}" wx:if="{{flag<2}}" bindtap="changeColor2"><image src='/images/star2.png' style='width:50rpx;height:50rpx'></image></view>
+      <view class="stars  {{flag>=3? 'on': ''}}" wx:if="{{flag<3}}" bindtap="changeColor3"><image src='/images/star2.png' style='width:50rpx;height:50rpx'></image></view>
+      <view class="stars  {{flag>=4? 'on': ''}}" wx:if="{{flag<4}}" bindtap="changeColor4"><image src='/images/star2.png' style='width:50rpx;height:50rpx'></image></view>
+      <view class="stars  {{flag>=5? 'on': ''}}" wx:if="{{flag<5}}" bindtap="changeColor5"><image src='/images/star2.png' style='width:50rpx;height:50rpx'></image></view>
+    </view>
+  </view>
+<!--文本域  -->
+  <view class="weui-cells_after-title">
+    <view class="weui-cell">
+      <view class="weui-cell__bd">
+        <textarea class="weui-textarea" bindinput="bindTextAreaChange" placeholder="给我个好评吧..." style="height: 8em" value="{{info}}" maxlength="{{noteMaxLen}}" focus />
+        <view class="weui-textarea-counter">{{noteNowLen}}/{{noteMaxLen}}</view>
+      </view>
+    </view>
+  </view>
+<!--发布按钮  -->
+<view class="btnSf">
+<button bindtap="bindSubmit">发布</button>
+</view>
+</view>

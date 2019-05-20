@@ -1,0 +1,33 @@
+<!--pages/order/order.wxml-->
+<view wx:if="{{!noOrder}}">
+  <block wx:for="{{orderList}}" wx:key="{{index}}">
+    <view class='item' bindtap='toDetail' data-orderId='{{item.orderId}}'>
+      <view class='item_top'>
+        <view class='in1'>
+          <image src='{{item.shopIcon}}' style='width:100rpx;height:100rpx;' mode='aspectFill'></image>
+        </view>
+        <view class='in2'>
+          <view class='shopName'>{{item.shopName}}</view>
+          <view class='time'>{{item.createTime}}</view>
+        </view>
+        <view class='in3'>
+          {{item.orderStatus}}
+        </view>
+      </view>
+      <view class='item-bottom'>
+        <view class='productName'>{{item.productName}}</view>
+        <view class='amount'>￥{{item.amount}}</view>
+      </view>
+    </view>
+    <view style='width:100%;height:16rpx;background-color:#E7E7E7'></view>
+  </block>
+
+  <view class='bottom_line' wx:if="{{isLastPage && page!=2}}">
+    嘤嘤嘤，这就是人家的底线了啦 ≧▽≦
+  </view>
+</view>
+
+<view wx:if="{{noOrder}}" style='width:100%;height:840rpx;background-color:#FFFFFF;text-align:center;'>
+  <view style='margin-top:64rpx;'><image src='/images/noOrder.png' style='width:280rpx;height:282rpx;'></image></view>
+  <view style='color:#E7E7E7'>您还没有订单</view>
+</view>

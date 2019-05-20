@@ -1,0 +1,23 @@
+<!--pages/editAddress/editAddress.wxml-->
+<view class='out'>
+  <view class='in1'><text style='font-size:32rpx;'>联系人：</text></view>
+  <view class='in2'><input type='text' style='font-size:32rpx;' value='{{buyerName}}'  bindinput="bindinput" data-input-type='buyerName'></input></view>
+</view>
+<view class='out'>
+  <view class='in1'><text style='font-size:32rpx;' >手机号：</text></view>
+  <view class='in2'><input type='text' bindinput="bindinput" data-input-type='buyerPhone' style='font-size:32rpx;' value="{{buyerPhone}}"></input></view>
+</view>
+<view class='out'>
+  <view class='in1'><text style='font-size:32rpx;'>收货地址：</text></view>
+  <view class='in2' bindtap='choose'>
+    <image src='/images/address.png' style="width:46rpx;height:38rpx; margin-right:10rpx"></image>
+    <view class='image'><text style='font-size:32rpx;'>{{location}}</text></view>
+  </view>
+</view>
+<view class='out'>
+  <view class='in1'><text style='font-size:32rpx;'>详细地址：</text></view>
+  <view class='in2'><input type='text' bindinput="bindinput" data-input-type='detail' style='font-size:32rpx;' value='{{detail}}'></input></view>
+</view>
+
+<view style='width:90%;margin:30rpx auto 0rpx auto' ><button type='primary' bindtap='save'>保存地址</button></view>
+<view style='margin:30rpx auto 0rpx auto;width:90%' wx:if="{{!isAdd}}"><button type='warn' bindtap='remove'>删除地址</button></view>

@@ -1,0 +1,14 @@
+<!--pages/question/question.wxml-->
+<view class='title' style='margin-top:20rpx;'  >
+  为什么没有微信支付？
+</view>
+<view class='answer'>
+  因为申请微信支付需要企业认证的开发者账号，所以暂时无法微信支付。
+</view>
+
+<view  class='title' style='margin-top:20rpx;' >
+  为什么我周围没有商店？
+</view>
+<view class='answer'>
+  测试商店需要定位到“吉林医药学院”，才可以搜到。
+</view>

@@ -1,0 +1,37 @@
+<!--pages/pay/pay.wxml-->
+<!-- <view class='head'>
+  <image class='head_img' src='/images/logo2.jpeg' mode="aspectFill" ></image>
+</view> -->
+
+<view class='time'>
+   <view><text style='font-size:26rpx;color:#666'>支付剩余时间</text></view>
+   <view style='margin-top:8rpx;'><text class='timeText'>{{minutes}} : {{seconds}}</text></view> 
+</view>
+<view class='info'>
+  <view class='shopName'>小熊猫</view>
+  <view class='amount'>￥{{amount}}</view>
+</view>
+
+<view class='choose'>
+  <view class='in1'>选择支付方式</view>
+</view>
+<view class='payType'>
+  <view class='item'>
+    <image class='item1' src='/images/weixinpay.png'></image>
+    <text class='item2' >微信支付</text>
+    <image class="item3" wx:if="{{selectType != 1}}" src='/images/noselect.png' data-type='1' bindtap='selectPayType'></image>
+    <image class="item3" wx:if="{{selectType == 1}}" src='/images/selected.png' data-type='1' bindtap='selectPayType'></image>
+  </view>
+
+   <view class='item' >
+    <image class='item1' src='/images/sorry.png'></image>
+    <text class='item2' >意念支付</text>
+
+    <image class="item3" wx:if="{{selectType != 2}}" src='/images/noselect.png' data-type='2' bindtap='selectPayType'></image>
+    <image class="item3" wx:if="{{selectType == 2}}" src='/images/selected.png' data-type='2' bindtap='selectPayType'></image>
+  </view>
+</view>
+
+<view class='bottom' bindtap='pay'>
+  确认支付
+</view>

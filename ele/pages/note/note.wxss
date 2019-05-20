@@ -1,0 +1,41 @@
+/* pages/note/note.wxss */
+.comment1-description{
+  padding:30rpx 0;
+  display:flex;
+  flex-direction:row;
+}
+.stars{
+    width: 50rpx;
+    height: 50rpx;
+    background-size: 50rpx 50rpx;
+    margin-left: 30rpx;
+    transition: 600ms;
+}
+.on{
+    width: 50rpx;
+    height: 50rpx;
+    background-size: 50rpx 50rpx;
+    transition: 1s;
+    transform: scale(1,1)
+}
+.weui-cells_after-title{
+  width: 92%;
+  margin:0 auto;
+  margin-top: 20rpx;
+  border:1px solid #ddd;
+}
+
+.btnSf{
+  width: 92%;
+  margin:30rpx auto;
+  
+}
+.btnSf button{
+    background: #FED06A;
+    color: #fff;
+}
+
+.btnSf button:active{
+  background: #FED06A;
+  color: #fff;
+}

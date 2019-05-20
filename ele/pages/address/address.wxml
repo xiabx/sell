@@ -1,0 +1,40 @@
+<!--pages/address/address.wxml-->
+<view class='addressOut'>
+  <form>
+    <view class='formView'>
+      <view style='width:77%;padding-right:56rpx;margin-left:20rpx;'><input bindinput="bindinput" type='text' placeholder='请输入地址' ></input></view>
+      <view ><image src='/images/search.png' style='width:60rpx;height:60rpx'></image></view>
+      <!-- <button size='mini' form-type='submit' type='primary' bindtap='search'>搜索</button> -->
+    </view>
+  </form>
+</view>
+<view style='height:2px;width:100%;border-top: 1px solid #E5E5E5;'></view>
+
+
+<view class='scrollyOut' wx:if="{{doSearch}}">
+  <scroll-view scroll-y style='height:1100rpx;width:100%' scroll-with-animation="{{true}}">
+  <block wx:for="{{locations}}" wx:key="{{index}}">
+    <view style='border-bottom: 1px solid #E5E5E5;width:94%;margin:0 auto;' data-index='{{index}}' wx:key="{{index}}" bindtap='back'>
+        <view style='margin-top:8rpx;'><text style='font-size:23px;'>{{item.title}}</text></view>
+        <view style='margin-bottom:14rpx;'><text style='font-size:14px;color:#666;'>{{item.address}}</text></view>
+    </view>
+  </block>
+  </scroll-view>
+</view>
+
+<view class='currentLocation' style='padding-top:20rpx;' wx:if="{{!doSearch}}">
+  <view style='width:94%;border-bottom: 1px solid #E5E5E5;margin:0 auto;'>
+    <view style='background-color:#E5E5E5;'><text style='margin-left:20rpx;font-size:14px;color:#666'>当前定位地址</text></view>
+    <view style='margin-left:20rpx;font-size:23px;;' bindtap='back'><text>{{currentLocation}}</text></view>
+  </view>
+</view>
+
+<view class='nearby'style="padding-top:20rpx;"  wx:if="{{!doSearch}}">
+  <view style='background-color:#E5E5E5;width:94%;margin:0 auto'><text style='margin-left:20rpx;font-size:14px;color:#666'>附近地址</text></view>
+  <block wx:for="{{currentLocationPois}}" wx:key="{{index}}">
+    <view style='border-bottom: 1px solid #E5E5E5;width:94%;margin:0 auto;' bindtap='back' data-index='{{index}}' wx:key="{{index}}">
+        <view style='margin-top:8rpx;'><text style='font-size:23px;'>{{item.title}}</text></view>
+        <view style='margin-bottom:14rpx;'><text style='font-size:14px;color:#666;'>{{item.address}}</text></view>
+    </view>
+  </block>
+</view>

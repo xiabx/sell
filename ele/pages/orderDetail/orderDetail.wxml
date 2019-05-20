@@ -1,0 +1,64 @@
+<!--pages/orderDetail/orderDetail.wxml-->
+<view class='head'>
+  <text class='head_text'>{{info.orderStatus}}</text> 
+  <view class='head_time' wx:if="{{info.orderStatusCode == 0}}">{{minutes}} : {{seconds}}</view>
+</view>
+<view wx:if="{{info.orderStatusCode == 3}}" class='head2'>
+  <view class='toComment' bindtap='toComment'>去评价 ></view>
+</view>
+<view wx:if="{{info.orderStatusCode == 0}}" class='head2'>
+  <view class='toComment' bindtap='toCancel'>取消订单</view>
+    <view class='toPay' wx:if="{{info.orderStatusCode == 0}}" bindtap='toPay'>去支付 ></view>
+</view>
+<view class='item'>
+  <view class='item_head'>{{info.shopName}}</view>
+  <block wx:for="{{info.cart}}" wx:key="{{index}}">
+    <view class='item_in'>
+      <view class='in_image'><image src='{{item.productIcon}}' style='height:160rpx;width:160rpx'></image></view>
+      <view class='in1'>
+        <view class='in11'>
+          <view class='in111'><text>{{item.productName}}</text></view> 
+          <view class='in112'><text>￥{{item.productPrice}}</text></view> 
+        </view>
+        
+        <view class='in12'><text>x{{item.productQuantity}}</text></view> 
+      </view>
+    </view>
+  </block>
+  <view class='other_item'>
+    <view><text>配送费</text></view>
+    <view style='margin-right:30rpx;'><text>￥{{info.distributionFee}}</text></view>
+  </view>
+  <view class='other_item'>
+    <view><text>优惠</text></view>
+    <view style='margin-right:30rpx;'><text>-￥{{info.reduce}}</text></view>
+  </view>
+  <view class='item_bottom'><view><text>合计：</text></view><view style='color:#FC857E;font-size:52rpx;'><text>￥{{info.orderAmount}}</text></view></view>
+  <!-- <view style='height:20rpx;'></view> -->
+</view>
+<view style='height:50rpx;'></view>
+<view class='item'>
+  <view class='other_item'>
+    <view style='width:160rpx;'><text>订单号:</text></view>
+    <view style='margin-right:30rpx;max-width:500rpx;text-align:right;font-size:28rpx'><text>{{info.orderId}}</text></view>
+  </view>
+  <view class='other_item'>
+    <view style='width:160rpx;'><text>下单时间:</text></view>
+    <view  style='margin-right:30rpx; max-width:500rpx;text-align:right;font-size:28rpx'><text>{{info.createTime}}</text></view>
+  </view>
+  <view class='other_item'>
+    <view style='width:160rpx;'><text>收货人:</text></view>
+    <view style='margin-right:30rpx;max-width:500rpx;text-align:right;font-size:28rpx' >{{info.buyerName}}<text></text></view>
+  </view>
+
+ <view class='other_item'>
+    <view style='width:160rpx;'><text>收货地址:</text></view>
+    <view style='margin-right:30rpx;max-width:500rpx;text-align:right;font-size:28rpx' >{{info.buyerLocation}}{{info.buyerAddress}}<text></text></view>
+  </view>
+   <view class='other_item'>
+    <view style='width:160rpx;'><text>手机号:</text></view>
+    <view style='margin-right:30rpx;max-width:500rpx;text-align:right;font-size:28rpx' >{{info.buyerPhone}}<text></text></view>
+  </view>
+
+</view>
+<view style='height:50rpx;'></view>
