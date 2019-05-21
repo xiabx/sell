@@ -54,7 +54,7 @@ public class SellerLoginController {
 			//HashMap<String, String> map = new HashMap<>();
 			//map.put("code", "0");
 			//map.put("msg", "登陆失败，请检查账号密码。");
-			return "tologin";
+			return "login";
 		}
 		HttpSession session = request.getSession();
 		session.setAttribute("sellerId", loginDTO.getUsername());
@@ -68,6 +68,10 @@ public class SellerLoginController {
 		//map.put("code", "1");
 		//map.put("msg", "登陆成功");
 		//return map;
-		return "redirect:/seller/order/list";
+		if (!loginDTO.getUsername().equals("admin") ){
+			return "redirect:/seller/order/list";
+		}else{
+			return "redirect:/admin/admin";
+		}
 	}
 }

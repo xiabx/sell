@@ -9,9 +9,9 @@ public class KeyUtilTest {
 	@Test
 	public void getKey() {
 		String hashAlgorithmName = "MD5";
-		String credentials = "123";
+		String credentials = "admin";
 		int hashIterations = 1024;
-		ByteSource credentialsSalt = ByteSource.Util.bytes("123");
+		ByteSource credentialsSalt = ByteSource.Util.bytes("admin");
 		Object obj = new SimpleHash(hashAlgorithmName, credentials, credentialsSalt, hashIterations);
 		System.out.println(obj);
 	}

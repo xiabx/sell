@@ -13,8 +13,8 @@
       <arg column="shop_icon" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="begin_fee" javaType="java.lang.Integer" jdbcType="INTEGER" />
       <arg column="distribution_fee" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
-      <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="create_time" javaType="java.lang.String" jdbcType="TIMESTAMP" />
+      <arg column="update_time" javaType="java.lang.String" jdbcType="TIMESTAMP" />
     </constructor>
   </resultMap>
   <!--id, shop_name,longitude,latitude,begin_fee,distribution_fee,shop_icon-->
@@ -27,6 +27,8 @@
     <result column="begin_fee" property="beginFee" javaType="integer" jdbcType="INTEGER"/>
     <result column="distribution_fee" property="distributionFee" javaType="integer" jdbcType="INTEGER"/>
     <result column="shop_icon" property="shopIcon" javaType="string" jdbcType="VARCHAR"/>
+    <result column="create_time"  property="createTime" javaType="java.lang.String" jdbcType="TIMESTAMP" />
+    <result column="update_time"  property="updateTime" javaType="java.lang.String" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List">
     id, username, password, shop_name,longitude,latitude,shop_sold,begin_fee,distribution_fee,shop_icon, create_time, update_time
@@ -47,7 +49,7 @@
   <select id="getAllSellerInfo" resultMap="resultMap2">
     select
     <include refid="Base_Column_List" />
-    from seller_info
+    from seller_info where id != 'admin'
   </select>
   <select id="getAllSellerInfoOrderSold" resultMap="resultMap2">
     select

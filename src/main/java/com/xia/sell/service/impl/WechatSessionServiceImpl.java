@@ -24,7 +24,7 @@ public class WechatSessionServiceImpl implements WechatSessionService {
 		wechatSessionMapper.insert(session);
 		return sessionId;
 	}
-
+	//sessionid 为自定义 下发给用户
 	public String getOpenid(String sessionId){
 		WechatSession wechatSession = wechatSessionMapper.selectByPrimaryKey(sessionId);
 		return wechatSession.getOpenid();

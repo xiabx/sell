@@ -159,22 +159,39 @@
 
         </div>
 </span>
+<!--评价管理-->
+
 <span id="commentContent" style="display: none;">
     <div id="title">评价列表</div>
     <div id="content">
-        <div>
-            <div style="float: left;width:100px;height:100px;border-radius:100px;overflow: hidden;"><img style="height: 100px;width: 100px" src="https://img.meituan.net/avatar/7d4eb7515534a7876cddfe21893059a07056.jpg" alt=""></div>
-            <div style="float: left;margin-left: 31px;font-size: 22px;color: #333333;">hello world</div>
-            <div style="margin-left: 20px;height: 20px;line-height: 30px;color: #333333;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2018-12-15 24:12:00
+        <span id="commentContentIn">
+            <div>
+                <div style="float: left;width:70px;height:70px;border-radius:100px;overflow: hidden;"><img style="height: 70px;width: 70px" src="https://img.meituan.net/avatar/7d4eb7515534a7876cddfe21893059a07056.jpg" alt=""></div>
+                <div style="float: left;margin-left: 31px;font-size: 22px;color: #333333;">hello world</div>
+                <div style="margin-left: 20px;height: 20px;line-height: 30px;color: #333333;">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2018-12-15 24:12:00
+                </div>
+                <div style="margin-top: 28px; margin-left: 100px;font-size: 18px;color: #333333;">还不错，挺好吃的。</div>
             </div>
-            <div style="margin-top: 58px;margin-left: 130px;font-size: 18px;color: #333333;">还不错，挺好吃的。</div>
-        </div>
-        <hr>
+            <hr>
+        </span>
     </div>
 </span>
 
 <script src="../static/layui/layui.all.js" th:src="@{/layui/layui.all.js}"></script>
+<script id="tpl-commentList" type="text/html">
+    {{each data}}
+    <div>
+        <div style="float: left;width:70px;height:70px;border-radius:100px;overflow: hidden;"><img style="height: 70px;width: 70px" src="{{$value.buyerIcon}}" alt=""></div>
+        <div style="float: left;margin-left: 31px;font-size: 22px;color: #333333;">{{$value.buyerName}}</div>
+        <div style="margin-left: 20px;height: 20px;line-height: 30px;color: #333333;">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$value.createTime}}
+        </div>
+        <div style="margin-top: 28px; margin-left: 100px;font-size: 18px;color: #333333;">{{$value.content}}</div>
+    </div>
+    <hr>
+    {{/each}}
+</script>
 <script id="tpl-classList" type="text/html">
     {{each data}}
     <tr>
@@ -838,9 +855,23 @@
             }
         })
     }
-
-
-    //--------------------------------------------------------------------------------------------------------tab页
+    //------------------------------------------------评价管理-----------------------------------------------------------
+    //渲染评论列表
+    function renderCommentList(){
+        var sellerId = $("#hidden").val();
+        $.ajax({
+            url:"/buyer/comment/list?sellerId="+sellerId+"&page=1",
+            success:(data)=>{
+                data = data.data.list;
+                var s = template("tpl-commentList", {
+                    data
+                });
+                $("#commentContentIn").html("");
+                $("#commentContentIn").append($(s));
+            }
+        })
+    }
+    //-----------------------------------------------tab页---------------------------------------------------------
     //tab页切换
     var preTab = "#orderContent";
     function changeTab(e) {

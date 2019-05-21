@@ -3,8 +3,6 @@ package com.xia.sell.po;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,6 +17,6 @@ public class SellerInfo {
     private String shopIcon;
     private Integer beginFee;
     private Integer distributionFee;
-    private Date createTime;
-    private Date updateTime;
+    private String createTime;
+    private String updateTime;
 }
